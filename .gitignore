@@ -1,0 +1,22 @@
+# Single shared env file (see .env.example) — never commit the real one
+.env
+
+# Python / Django
+backend/.venv/
+backend/__pycache__/
+**/__pycache__/
+*.pyc
+backend/db.sqlite3
+backend/staticfiles/
+backend/media/
+
+# Node / Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# OS / editor
+.DS_Store
+*.swp
+
+# Logo working copies are tracked on purpose (assets/, logo.png, frontend/public derivatives)
