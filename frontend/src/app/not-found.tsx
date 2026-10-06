@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { Container } from "@/components/Section";
+import { SiteChrome } from "@/components/SiteChrome";
 
 export const metadata = {
   title: "Page not found",
@@ -8,7 +9,9 @@ export const metadata = {
 };
 
 export default function NotFound() {
+  // Rendered under the root layout only, so it brings the site chrome itself.
   return (
+    <SiteChrome>
     <Container className="py-20">
       <p className="text-sm font-bold uppercase tracking-wider text-slate">Error 404</p>
       <h1 className="mt-2 font-display text-4xl font-extrabold text-navy">We couldn&apos;t find that page</h1>
@@ -37,5 +40,6 @@ export default function NotFound() {
         </Link>
       </div>
     </Container>
+    </SiteChrome>
   );
 }

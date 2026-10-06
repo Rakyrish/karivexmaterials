@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import logo from "../../../public/brand/karivex-logo.png";
+import logo from "../../../../public/brand/karivex-logo.png";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ExternalIcon } from "@/components/Icons";
 import { Container, PageHero } from "@/components/Section";

@@ -7,7 +7,7 @@ export default function GlobalError({ reset }: { error: Error; reset: () => void
     <html lang="en-KE">
       <body style={{ fontFamily: "system-ui, sans-serif", padding: "3rem 1.5rem", color: "#021533" }}>
         <h1>KariVex Industrial Materials is temporarily unavailable</h1>
-        <p>Please try again shortly. Sales: +254 710 851911 · info@karivexsolutionsltd.com</p>
+        <p>Please try again shortly. Sales: +254 742 355548 · info@karivexsolutionsltd.com</p>
         <button type="button" onClick={reset} style={{ padding: "0.75rem 1.25rem", background: "#FC7701", border: 0, fontWeight: 700 }}>
           Try again
         </button>

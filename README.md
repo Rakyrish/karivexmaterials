@@ -23,8 +23,14 @@ images use Node 22 LTS and Python 3.13.
 browser ──► reverse proxy (nginx/Caddy, TLS)
               ├─ /admin, /static, /media, /healthz ─► Django (gunicorn)
               └─ everything else ───────────────────► Next.js
-                                                         └─ server-side ─► Django /api/v1 (private)
+                                                         ├─ server-side ─► Django /api/v1 (private)
+                                                         └─ /api/manage/* ─► Django /api/manage (staff dashboard)
 ```
+
+* **Staff dashboard** at `/dashboard`: sign in with a Django staff account to add and
+  edit products, photos, categories, services, testimonials, enquiries and site
+  settings, and to preview the site. It uses Django session login, CSRF and the same
+  group permissions as `/admin`, enforced by the API (`backend/manage_api`).
 
 * Every public page is rendered on the server from the database through the
   Django API; there is no hardcoded product list. Data fetches are cached and
