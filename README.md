@@ -102,6 +102,7 @@ See `docs/verification.md` for what was actually run and the results.
 
 * `docs/pizza-focus.md` — what is public, services, photos and licences, SEO and rich results
 * `docs/seo-playbook.md` — what the site does for search, plus Search Console, Google Business Profile and link-building steps
+* `docs/email-setup.md` — sending enquiry emails to info@ (Cloudflare Email Routing note, Gmail or provider SMTP, test command)
 * `docs/deployment.md` — server, DNS, TLS, proxy, email, Search Console, backups, rollback
 * `docs/admin-guide.md` — creating staff accounts, editing the catalogue, handling enquiries
 * `docs/catalogue-mapping.md` — where every supplied catalogue item ended up

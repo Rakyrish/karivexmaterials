@@ -134,6 +134,11 @@ or close the test enquiry in the admin afterwards.
 
 ## 6. Email
 
+See `docs/email-setup.md`. The company domain uses Cloudflare Email Routing, which only receives mail,
+so the site needs Gmail SMTP or a transactional provider to send enquiry notifications to info@.
+Verify with `python manage.py send_test_email`.
+
+
 * Use the company mail provider's SMTP (or a transactional provider) with credentials only in
   `.env.production`.
 * `DEFAULT_FROM_EMAIL` must be an address the provider is authorised to send for (SPF/DKIM).
