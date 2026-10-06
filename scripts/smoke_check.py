@@ -96,7 +96,7 @@ def main():
         check(len(h1(body)) == 1, f"{path}: h1 count {len(h1(body))}")
         check('"@type":"Service"' in body and '"@type":"FAQPage"' in body, f"{path}: Service/FAQ JSON-LD")
 
-    for path in ["/", "/products", "/categories", "/applications", "/services", "/pizza-oven-guide",
+    for path in ["/", "/products", "/categories", "/applications", "/services", "/pizza-oven-guide", "/roof-cyclone-guide", "/guides", "/faq", "/glossary", "/guides/choosing-fire-bricks", "/guides/wood-fired-vs-gas-pizza-ovens", "/guides/pizza-oven-care-and-maintenance", "/guides/roof-cyclones-vs-electric-extractor-fans", "/guides/ventilating-hot-metal-roofs",
                  "/about", "/contact", "/privacy", "/image-credits"]:
         status, _, body = get(args.site + path)
         check(status == 200, f"{path}: status {status}")

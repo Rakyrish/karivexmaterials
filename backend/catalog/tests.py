@@ -284,3 +284,30 @@ class MediaTests(SeededCatalogTestCase):
         )
         with self.assertRaises(ValidationError):
             image.full_clean()
+
+
+class TestimonialTests(SeededCatalogTestCase):
+    def test_placeholders_exist_but_never_public(self):
+        from .models import Testimonial
+
+        placeholders = Testimonial.objects.filter(is_placeholder=True)
+        self.assertEqual(placeholders.count(), 3)
+        p = placeholders.first()
+        p.status = "published"
+        p.consent_confirmed = True
+        p.save()
+        p.refresh_from_db()
+        self.assertEqual(p.status, "draft")
+        self.assertEqual(self.client.get("/api/v1/testimonials/").json(), [])
+
+    def test_real_testimonial_needs_consent(self):
+        from .models import Testimonial
+
+        t = Testimonial.objects.create(customer_name="A. Customer", quote="Real words.", status="published")
+        t.refresh_from_db()
+        self.assertEqual(t.status, "draft")
+        t.consent_confirmed = True
+        t.status = "published"
+        t.save()
+        data = self.client.get("/api/v1/testimonials/").json()
+        self.assertEqual([d["quote"] for d in data], ["Real words."])

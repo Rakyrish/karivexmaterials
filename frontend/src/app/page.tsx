@@ -2,15 +2,21 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { HomeHero } from "@/components/HomeHero";
+import { Testimonials } from "@/components/Testimonials";
 import { ArrowRightIcon, CheckIcon, ExternalIcon, TruckIcon } from "@/components/Icons";
 import { ProductCard } from "@/components/ProductCard";
 import { Container, SectionHeading } from "@/components/Section";
-import { getApplications, getProducts } from "@/lib/api";
+import { getApplications, getProducts, getTestimonials } from "@/lib/api";
 import { SITE_ORIGIN } from "@/lib/config";
 import { generalWhatsAppMessage, whatsappHref } from "@/lib/contact";
 import { loadCategories, loadServices, loadSettings } from "@/lib/data";
 import { IMAGES, applicationImage, categoryImage, serviceImage } from "@/lib/images";
+import { ARTICLES } from "@/lib/articles";
 import { pageMetadata } from "@/lib/seo";
+
+const FEATURED_GUIDES = ["/pizza-oven-guide", "/roof-cyclone-guide", "/guides/choosing-fire-bricks", "/guides/ventilating-hot-metal-roofs"].map(
+  (href) => ARTICLES.find((a) => a.href === href)!,
+);
 
 const DEFAULT_INTRO =
   "Fire bricks, refractory cement and mortar, castable, ceramic fibre insulation, vermiculite, perlite and door seals for pizza ovens, plus oven building, repair and relining — and stainless steel roof cyclones, supplied, installed and repaired. Delivered from Nairobi.";
@@ -28,15 +34,15 @@ export async function generateMetadata() {
 }
 
 export default async function HomePage() {
-  const [settings, categories, services, applications, featured] = await Promise.all([
+  const [settings, categories, services, applications, featured, testimonials] = await Promise.all([
     loadSettings(),
     loadCategories(),
     loadServices(),
     getApplications(),
     getProducts({ page_size: 8 }),
+    getTestimonials(),
   ]);
   const wa = whatsappHref(settings, generalWhatsAppMessage(SITE_ORIGIN));
-  const guideImage = IMAGES["margherita-pizza"];
 
   return (
     <>
@@ -90,51 +96,6 @@ export default async function HomePage() {
           </ul>
         </Container>
       </section>
-
-      {services.length > 0 && (
-        <section aria-labelledby="services-title" className="hex-texture bg-navy py-16 text-white">
-          <Container>
-            <span aria-hidden="true" className="block h-1 w-12 rounded bg-orange" />
-            <h2 id="services-title" className="mt-3 font-display text-3xl font-extrabold">
-              Our services
-            </h2>
-            <p className="mt-2 max-w-2xl text-white/85">
-              We don&apos;t only supply the materials — we build and repair pizza ovens, install and repair roof
-              cyclones, help you plan your project and deliver to your site.
-            </p>
-            <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {services.map((service) => {
-                const img = serviceImage(service.slug);
-                return (
-                  <li key={service.slug}>
-                    <Link
-                      href={`/services/${service.slug}`}
-                      className="group flex h-full flex-col overflow-hidden rounded-2xl bg-white text-ink shadow-lg"
-                    >
-                      <span className="relative block aspect-[16/10] bg-navy-700">
-                        {img ? (
-                          <Image src={img.src} alt="" fill placeholder="blur" sizes="(min-width:1024px) 25vw, 50vw" className="object-cover" />
-                        ) : (
-                          <span className="flex h-full items-center justify-center text-5xl text-orange">
-                            <TruckIcon />
-                          </span>
-                        )}
-                      </span>
-                      <span className="flex flex-1 flex-col p-5">
-                        <span className="font-display text-xl font-bold text-navy group-hover:underline">{service.name}</span>
-                        <span className="mt-1 text-sm text-slate">{service.summary}</span>
-                        <span className="mt-auto inline-flex items-center gap-1 pt-4 text-sm font-semibold text-navy">
-                          Request <ArrowRightIcon />
-                        </span>
-                      </span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </Container>
-        </section>
-      )}
 
       <section aria-labelledby="cyclones-title" className="relative overflow-hidden py-16">
         <Container className="grid items-center gap-10 lg:grid-cols-2">
@@ -210,6 +171,52 @@ export default async function HomePage() {
         </Container>
       </section>
 
+      {services.length > 0 && (
+        <section aria-labelledby="services-title" className="hex-texture bg-navy py-16 text-white">
+          <Container>
+            <span aria-hidden="true" className="block h-1 w-12 rounded bg-orange" />
+            <h2 id="services-title" className="mt-3 font-display text-3xl font-extrabold">
+              Our services
+            </h2>
+            <p className="mt-2 max-w-2xl text-white/85">
+              We don&apos;t only supply the materials — we build and repair pizza ovens, install and repair roof
+              cyclones, help you plan your project and deliver to your site.
+            </p>
+            <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {services.map((service) => {
+                const img = serviceImage(service.slug);
+                return (
+                  <li key={service.slug}>
+                    <Link
+                      href={`/services/${service.slug}`}
+                      className="group flex h-full flex-col overflow-hidden rounded-2xl bg-white text-ink shadow-lg"
+                    >
+                      <span className="relative block aspect-[16/10] bg-navy-700">
+                        {img ? (
+                          <Image src={img.src} alt="" fill placeholder="blur" sizes="(min-width:1024px) 25vw, 50vw" className="object-cover" />
+                        ) : (
+                          <span className="flex h-full items-center justify-center text-5xl text-orange">
+                            <TruckIcon />
+                          </span>
+                        )}
+                      </span>
+                      <span className="flex flex-1 flex-col p-5">
+                        <span className="font-display text-xl font-bold text-navy group-hover:underline">{service.name}</span>
+                        <span className="mt-1 text-sm text-slate">{service.summary}</span>
+                        <span className="mt-auto inline-flex items-center gap-1 pt-4 text-sm font-semibold text-navy">
+                          Request <ArrowRightIcon />
+                        </span>
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </Container>
+        </section>
+      )}
+
+
       {featured.results.length > 0 && (
         <section aria-labelledby="featured-title" className="bg-mist py-16">
           <Container>
@@ -229,25 +236,30 @@ export default async function HomePage() {
         </section>
       )}
 
-      <section aria-labelledby="guide-title" className="py-16">
-        <Container className="grid items-center gap-10 lg:grid-cols-2">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
-            <Image src={guideImage.src} alt={guideImage.alt} fill placeholder="blur" sizes="(min-width:1024px) 50vw, 100vw" className="object-cover" />
-          </div>
-          <div>
-            <span aria-hidden="true" className="block h-1 w-12 rounded bg-orange" />
-            <h2 id="guide-title" className="mt-3 font-display text-3xl font-extrabold text-navy">
-              How a pizza oven is built
-            </h2>
-            <p className="mt-3 text-lg text-slate">
-              An insulated hearth, a fire-brick cooking floor, a dome that stores and reflects heat, insulation over the
-              top and a sealed door. Our guide walks through each layer, the materials used, and how to cure a new oven
-              without cracking it.
-            </p>
-            <Link href="/pizza-oven-guide" className="mt-5 inline-flex min-h-12 items-center gap-2 rounded-md bg-navy px-5 font-bold text-white hover:bg-navy-700">
-              Read the pizza oven guide <ArrowRightIcon />
-            </Link>
-          </div>
+      <section aria-labelledby="learn-title" className="py-16">
+        <Container>
+          <SectionHeading
+            id="learn-title"
+            title="Learn before you buy"
+            intro="Free guides to pizza ovens and roof cyclones — how they work, what to choose and how to look after them."
+            href="/guides"
+            linkLabel="All guides"
+          />
+          <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {FEATURED_GUIDES.map((guide) => (
+              <li key={guide.href}>
+                <Link href={guide.href} className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white hover:shadow-lg">
+                  <span className="relative block aspect-[16/10]">
+                    <Image src={IMAGES[guide.imageKey].src} alt="" fill placeholder="blur" sizes="(min-width:1024px) 25vw, 50vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                  </span>
+                  <span className="flex flex-1 flex-col p-5">
+                    <span className="text-xs font-bold uppercase tracking-wider text-orange-600">{guide.topic}</span>
+                    <span className="mt-1 font-display text-lg font-bold leading-snug text-navy group-hover:underline">{guide.title}</span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </Container>
       </section>
 
@@ -284,6 +296,8 @@ export default async function HomePage() {
           </Container>
         </section>
       )}
+
+      <Testimonials testimonials={testimonials} settings={settings} />
 
       <section aria-labelledby="quote-cta" className="pb-4">
         <Container>

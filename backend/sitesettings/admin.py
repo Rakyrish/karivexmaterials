@@ -20,6 +20,7 @@ class SiteSettingsAdmin(admin.ModelAdmin):
                 "primary_phone", "secondary_phone", "whatsapp_number_intl", "email",
                 "address_line", "hours_text", "regions_served",
                 "contact_source_url", "contact_verified_on", "contact_form_enabled",
+                "google_review_url",
             ),
         }),
         ("Analytics", {

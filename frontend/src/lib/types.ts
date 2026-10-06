@@ -22,6 +22,7 @@ export interface SiteSettings {
   contact_verified_on: string | null;
   contact_form_enabled: boolean;
   ga_measurement_id: string;
+  google_review_url: string;
   homepage_headline: string;
   homepage_intro: string;
   logo_header_override: string | null;
@@ -159,6 +160,18 @@ export interface Facets {
   applications: FacetValue[];
   availability: FacetValue[];
   facets: { key: string; label: string; values: FacetValue[] }[];
+}
+
+export interface Testimonial {
+  id: number;
+  customer_name: string;
+  customer_role: string;
+  location: string;
+  quote: string;
+  rating: number | null;
+  topic: "pizza" | "cyclones" | "general";
+  service: { name: string; slug: string } | null;
+  received_on: string | null;
 }
 
 export interface Faq {

@@ -15,9 +15,9 @@ export async function generateMetadata({ searchParams }: PageProps<"/products">)
   const filtered = FILTER_KEYS.some((key) => first(params, key));
   const page = pageNumber(params);
   return pageMetadata({
-    title: page > 1 && !filtered ? `Pizza Oven Materials — Page ${page}` : "Pizza Oven Materials",
+    title: page > 1 && !filtered ? `Pizza Oven Materials & Roof Cyclones — Page ${page}` : "Pizza Oven Materials & Roof Cyclones",
     description:
-      "Fire bricks, refractory cement and mortar, castable, ceramic fibre blanket, vermiculite, perlite, door rope and high-temperature sealants for building and repairing pizza ovens.",
+      "Fire bricks, refractory cement and mortar, castable, ceramic fibre, vermiculite, perlite, door rope and sealants for pizza ovens, plus 600 mm stainless steel roof cyclones.",
     path: "/products",
     // Search and filter combinations are not indexed; plain pagination is.
     canonicalPath: !filtered && page > 1 ? `/products?page=${page}` : "/products",
@@ -45,15 +45,15 @@ export default async function ProductsPage({ searchParams }: PageProps<"/product
   return (
     <>
       <PageHero
-        title={q ? `Search results for “${q}”` : "Pizza oven materials"}
+        title={q ? `Search results for “${q}”` : "Pizza oven materials and roof cyclones"}
         breadcrumbs={<Breadcrumbs items={[{ name: "Products", href: "/products" }]} />}
       >
         <p>
           {products.count} product{products.count === 1 ? "" : "s"}
-          {q || category || application || availability ? " match your search" : " for oven floors, domes, insulation and doors"}.
+          {q || category || application || availability ? " match your search" : " for pizza oven floors, domes, insulation and doors, and roof ventilation"}.
           Add items to your quote basket and send one request — or{" "}
           <Link href="/services" className="font-semibold text-navy underline">
-            ask us to build or repair your oven
+            ask us to build or repair an oven, or install cyclones
           </Link>
           .
         </p>

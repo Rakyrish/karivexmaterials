@@ -58,6 +58,22 @@ from the site.
 * **Hidden (outside current focus):** the status used for non-pizza products. They stay in the
   database and can be re-published at any time.
 
+## Testimonials (real customer feedback only)
+
+**Catalogue → Testimonials** starts with three entries marked **[PLACEHOLDER]** that show the format.
+They can never be published.
+
+To add a real testimonial:
+1. Replace a placeholder's text with the customer's actual words, or add a new testimonial.
+2. Add their name as they agreed to be shown, an optional role and town, and their rating if they gave one.
+3. Tick **Customer consent confirmed**, then publish.
+
+Until something is published, the website shows an invitation to leave feedback instead of quotes.
+
+Don't write testimonials yourself or change what a customer said. Invented reviews mislead
+customers and are treated as spam by Google. Add your Google review link in
+**Site settings → Google review URL** to show a "Review us on Google" button.
+
 ## Enquiries
 
 * Enquiry types: Quotation request, Service request (shows the service name) and General enquiry.

@@ -4,12 +4,13 @@ import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ContactLink } from "@/components/ContactLink";
 import { EnquiryForm } from "@/components/EnquiryForm";
+import { Testimonials } from "@/components/Testimonials";
 import { FaqSection } from "@/components/FaqSection";
 import { CheckIcon, PhoneIcon, WhatsAppIcon } from "@/components/Icons";
 import { JsonLd } from "@/components/JsonLd";
 import { ProductCard } from "@/components/ProductCard";
 import { Container } from "@/components/Section";
-import { getService } from "@/lib/api";
+import { getService, getTestimonials } from "@/lib/api";
 import { SITE_ORIGIN, absoluteUrl } from "@/lib/config";
 import { whatsappHref } from "@/lib/contact";
 import { loadSettings } from "@/lib/data";
@@ -36,6 +37,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
   const { slug } = await params;
   const [service, settings] = await Promise.all([getService(slug), loadSettings()]);
   if (!service) notFound();
+  const testimonials = await getTestimonials(service.slug.includes("cyclone") ? "cyclones" : "pizza");
   const path = `/services/${service.slug}`;
   const stock = serviceImage(service.slug);
   const paragraphs = service.description.split(/\n\s*\n/).filter(Boolean);
@@ -160,6 +162,8 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
           </Container>
         </section>
       )}
+
+      <Testimonials testimonials={testimonials} settings={settings} title="Customer feedback" />
 
       <section id="request" aria-labelledby="request-title" className="scroll-mt-40 py-12">
         <Container className="max-w-4xl">

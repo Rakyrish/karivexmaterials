@@ -42,7 +42,7 @@ export function FloatingContact({ settings }: { settings: SiteSettings }) {
       )}
       <ContactLink
         kind="email"
-        href={mailtoHref(settings.email, "Pizza oven enquiry")}
+        href={mailtoHref(settings.email, "Website enquiry")}
         placement="floating"
         ariaLabel={`Email ${settings.email}`}
         className={`${button} bg-navy text-white`}

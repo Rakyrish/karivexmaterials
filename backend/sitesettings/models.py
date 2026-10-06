@@ -55,13 +55,17 @@ class SiteSettings(models.Model):
     )
 
     production_origin = models.URLField(default="https://materials.karivexsolutionsltd.com")
+    google_review_url = models.URLField(
+        blank=True,
+        help_text="Your Google Business Profile 'Ask for reviews' link. Shown as 'Review us on Google'.",
+    )
     ga_measurement_id = models.CharField(
         max_length=32, blank=True, help_text="e.g. G-XXXXXXXXXX. Leave blank to disable analytics."
     )
 
     homepage_headline = models.CharField(
         max_length=160,
-        default="Pizza Oven Materials, Building & Repair",
+        default="Pizza Ovens & Roof Cyclones, Supplied, Built & Repaired",
     )
     homepage_intro = models.TextField(blank=True)
 

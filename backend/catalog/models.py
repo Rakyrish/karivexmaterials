@@ -366,6 +366,65 @@ class Service(TimeStampedModel):
         super().save(*args, **kwargs)
 
 
+class Testimonial(TimeStampedModel):
+    """Genuine customer feedback, shown only when published with the
+    customer's consent. Placeholder drafts exist to show admins the format
+    and must never be published as if they were real."""
+
+    class Topic(models.TextChoices):
+        PIZZA_OVENS = "pizza", "Pizza ovens"
+        ROOF_CYCLONES = "cyclones", "Roof cyclones"
+        GENERAL = "general", "General"
+
+    customer_name = models.CharField(max_length=120, help_text="As the customer agreed to be named, e.g. 'Jane W.'")
+    customer_role = models.CharField(
+        max_length=160, blank=True, help_text="Optional, e.g. 'Owner, Example Pizzeria' (with permission)."
+    )
+    location = models.CharField(max_length=120, blank=True, help_text="Optional town, e.g. 'Nairobi'.")
+    quote = models.TextField(help_text="The customer's own words. Do not edit their meaning.")
+    rating = models.PositiveSmallIntegerField(
+        null=True, blank=True, choices=[(i, f"{i} / 5") for i in range(1, 6)],
+        help_text="Only if the customer gave a rating.",
+    )
+    topic = models.CharField(max_length=10, choices=Topic.choices, default=Topic.GENERAL)
+    service = models.ForeignKey(Service, null=True, blank=True, on_delete=models.SET_NULL, related_name="testimonials")
+    received_on = models.DateField(null=True, blank=True)
+    consent_confirmed = models.BooleanField(
+        default=False, help_text="Tick only when the customer has agreed to this being published on the website."
+    )
+    is_placeholder = models.BooleanField(
+        default=False, editable=False, help_text="Example text created by the system; can never be published."
+    )
+    status = models.CharField(max_length=10, choices=PublishStatus.choices, default=PublishStatus.DRAFT)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "-received_on", "-created_at"]
+
+    def __str__(self):
+        prefix = "[PLACEHOLDER] " if self.is_placeholder else ""
+        return f"{prefix}{self.customer_name}: {self.quote[:50]}"
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+
+        if self.status == PublishStatus.PUBLISHED:
+            if self.is_placeholder:
+                raise ValidationError(
+                    "This is a placeholder. Replace it with a real customer's words, or create a new testimonial."
+                )
+            if not self.consent_confirmed:
+                raise ValidationError("Confirm the customer agreed to publication before publishing.")
+
+    def save(self, *args, **kwargs):
+        # Editing a placeholder's text turns it into a real entry the admin owns.
+        if self.is_placeholder and self.pk and "[Placeholder]" not in self.quote:
+            self.is_placeholder = False
+        if self.status == PublishStatus.PUBLISHED and (self.is_placeholder or not self.consent_confirmed):
+            self.status = PublishStatus.DRAFT
+        super().save(*args, **kwargs)
+
+
 class Redirect(TimeStampedModel):
     """Permanent redirects for public URLs that have moved (e.g. a renamed
     product slug). Created automatically on slug changes; editable in admin."""

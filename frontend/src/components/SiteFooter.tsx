@@ -31,6 +31,7 @@ export function SiteFooter({
           <p className="text-sm text-white/80">
             {settings.division_descriptor} · {settings.relationship_wording}
           </p>
+          <p className="mt-3 text-sm font-semibold text-orange">Pizza ovens · Roof cyclones</p>
         </div>
 
         <nav aria-label="Materials and services">
@@ -63,6 +64,9 @@ export function SiteFooter({
               ["/products", "All oven materials"],
               ["/pizza-oven-guide", "Pizza oven guide"],
               ["/roof-cyclone-guide", "Roof cyclone guide"],
+              ["/guides", "All guides"],
+              ["/faq", "FAQ"],
+              ["/glossary", "Glossary"],
               ["/applications", "Oven projects"],
               ["/quote", "Request a quote"],
               ["/about", "About the division"],

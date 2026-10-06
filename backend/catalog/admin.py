@@ -13,6 +13,7 @@ from .models import (
     PublishStatus,
     Redirect,
     Service,
+    Testimonial,
 )
 
 
@@ -209,3 +210,22 @@ class ServiceAdmin(admin.ModelAdmin):
 
     def view_on_site(self, obj):
         return public_url(f"/services/{obj.slug}") if obj.status == PublishStatus.PUBLISHED else None
+
+
+@admin.register(Testimonial)
+class TestimonialAdmin(admin.ModelAdmin):
+    list_display = ("__str__", "topic", "rating", "consent_confirmed", "status", "is_placeholder", "order")
+    list_filter = ("status", "topic", "consent_confirmed", "is_placeholder")
+    list_editable = ("order",)
+    search_fields = ("customer_name", "customer_role", "quote")
+    readonly_fields = ("is_placeholder",)
+    fields = (
+        "is_placeholder", "customer_name", "customer_role", "location", "quote", "rating", "topic",
+        "service", "received_on", "consent_confirmed", "status", "order",
+    )
+
+    def get_readonly_fields(self, request, obj=None):
+        readonly = list(super().get_readonly_fields(request, obj))
+        if not request.user.has_perm("catalog.publish_product"):
+            readonly.append("status")
+        return readonly

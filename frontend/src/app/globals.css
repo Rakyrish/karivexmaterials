@@ -76,17 +76,17 @@ h3,
  * Homepage hero animation (CSS only; all decorative; reduced-motion safe)
  * ------------------------------------------------------------------------- */
 
-/* Crossfading Ken Burns slideshow: 3 slides x 7s. */
+/* Crossfading Ken Burns slideshow: 4 slides x 7s. */
 @keyframes kv-kenburns {
   0% { opacity: 0; transform: scale(1.06) translate3d(0, 0, 0); }
-  8% { opacity: 1; }
-  33% { opacity: 1; }
-  42% { opacity: 0; transform: scale(1.18) translate3d(-1.5%, -1%, 0); }
+  6% { opacity: 1; }
+  25% { opacity: 1; }
+  32% { opacity: 0; transform: scale(1.18) translate3d(-1.5%, -1%, 0); }
   100% { opacity: 0; transform: scale(1.18) translate3d(-1.5%, -1%, 0); }
 }
 .hero-slide {
   opacity: 0;
-  animation: kv-kenburns 21s linear infinite both;
+  animation: kv-kenburns 28s linear infinite both;
   will-change: opacity, transform;
 }
 

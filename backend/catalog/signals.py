@@ -14,11 +14,12 @@ from .models import (
     ProductVariant,
     Redirect,
     Service,
+    Testimonial,
 )
 
 CATALOG_MODELS = (
     Application, Category, Product, ProductDocument, ProductImage,
-    ProductSpecification, ProductVariant, Redirect, Service,
+    ProductSpecification, ProductVariant, Redirect, Service, Testimonial,
 )
 FILE_FIELDS = {ProductImage: "image", ProductDocument: "file", Category: "image", Application: "image", Service: "image"}
 

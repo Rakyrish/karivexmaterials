@@ -26,7 +26,8 @@ export const FALLBACK_SETTINGS: SiteSettings = {
   contact_verified_on: "2026-10-06",
   contact_form_enabled: true,
   ga_measurement_id: "",
-  homepage_headline: "Pizza Oven Materials, Building & Repair",
+  google_review_url: "",
+  homepage_headline: "Pizza Ovens & Roof Cyclones, Supplied, Built & Repaired",
   homepage_intro: "",
   logo_header_override: null,
 };

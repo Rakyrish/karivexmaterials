@@ -7,7 +7,18 @@ export interface Faq {
 
 /** Visible FAQ accordion with matching FAQPage structured data. The markup
  * mirrors exactly what is shown on the page. */
-export function FaqSection({ faqs, title = "Frequently asked questions", id = "faq" }: { faqs: Faq[]; title?: string; id?: string }) {
+export function FaqSection({
+  faqs,
+  title = "Frequently asked questions",
+  id = "faq",
+  withSchema = true,
+}: {
+  faqs: Faq[];
+  title?: string;
+  id?: string;
+  /** Set false when the page publishes one combined FAQPage itself. */
+  withSchema?: boolean;
+}) {
   if (!faqs.length) return null;
   return (
     <section aria-labelledby={id}>
@@ -30,6 +41,7 @@ export function FaqSection({ faqs, title = "Frequently asked questions", id = "f
           </details>
         ))}
       </div>
+      {withSchema && (
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -41,6 +53,7 @@ export function FaqSection({ faqs, title = "Frequently asked questions", id = "f
           })),
         }}
       />
+      )}
     </section>
   );
 }

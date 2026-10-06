@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 
 import { getSitemapData } from "@/lib/api";
 import { absoluteUrl } from "@/lib/config";
+import { ARTICLES } from "@/lib/articles";
 import { HERO_IMAGE, IMAGES, categoryImage, serviceImage } from "@/lib/images";
 
 /** Published, indexable canonical URLs only. Filtered/search views, the
@@ -16,14 +17,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: absoluteUrl("/products"), lastModified: catalogUpdated ?? contentUpdated, changeFrequency: "weekly", priority: 0.9 },
     { url: absoluteUrl("/services"), lastModified: contentUpdated, changeFrequency: "monthly", priority: 0.9 },
     { url: absoluteUrl("/guides"), lastModified: contentUpdated, changeFrequency: "monthly", priority: 0.6 },
-    { url: absoluteUrl("/pizza-oven-guide"), lastModified: contentUpdated, changeFrequency: "monthly", priority: 0.7, images: [absoluteUrl(IMAGES["oven-fire-floor"].src.src)] },
-    {
-      url: absoluteUrl("/roof-cyclone-guide"),
-      lastModified: contentUpdated,
-      changeFrequency: "monthly",
+    ...ARTICLES.map((a) => ({
+      url: absoluteUrl(a.href),
+      lastModified: new Date(a.updated),
+      changeFrequency: "monthly" as const,
       priority: 0.7,
-      images: [absoluteUrl(IMAGES["roof-cyclone-closeup"].src.src), absoluteUrl(IMAGES["industrial-roof-cyclones"].src.src)],
-    },
+      images: [absoluteUrl(IMAGES[a.imageKey].src.src)],
+    })),
     { url: absoluteUrl("/categories"), lastModified: contentUpdated, changeFrequency: "monthly", priority: 0.7 },
     { url: absoluteUrl("/applications"), lastModified: contentUpdated, changeFrequency: "monthly", priority: 0.6 },
     { url: absoluteUrl("/about"), lastModified: contentUpdated, changeFrequency: "yearly", priority: 0.5 },

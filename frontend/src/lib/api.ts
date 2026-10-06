@@ -12,6 +12,7 @@ import type {
   ProductFilters,
   Service,
   SiteSettings,
+  Testimonial,
   SitemapData,
 } from "./types";
 
@@ -114,6 +115,10 @@ export async function getServices(): Promise<Service[]> {
 
 export function getService(slug: string) {
   return apiGet<Service>(`/services/${encodeURIComponent(slug)}/`, ["catalog"], { cached: false });
+}
+
+export async function getTestimonials(topic?: "pizza" | "cyclones"): Promise<Testimonial[]> {
+  return (await apiGet<Testimonial[]>(`/testimonials/${query({ topic })}`, ["catalog"])) ?? [];
 }
 
 export async function getRedirect(path: string): Promise<string | null> {

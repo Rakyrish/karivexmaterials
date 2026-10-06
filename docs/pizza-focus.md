@@ -101,3 +101,20 @@ The homepage hero is CSS-animated: a crossfading slow-zoom photo slideshow, risi
 fire-gradient headline, rotating service sentences, a turning pizza (a cut-out derivative of a
 licensed photo), floating tags, count-up stats and a ticker. Visitors with "reduce motion"
 enabled get a static version.
+
+
+## Pizza ovens and roof cyclones, balanced; learning centre (6 October 2026)
+
+* Homepage headline: "Pizza Ovens & Roof Cyclones, Supplied, Built & Repaired". The hero slideshow,
+  badge, buttons and stats now cover both. The cyclone section sits directly after the categories,
+  and a "Learn before you buy" section replaces the pizza-only guide teaser.
+* Learning centre (`/guides`, driven by `frontend/src/lib/articles.ts`):
+  * Pizza ovens: how ovens are built, choosing fire bricks, wood vs gas, care and maintenance.
+  * Roof cyclones: the cyclone guide, cyclones vs electric extractor fans, ventilating hot metal roofs.
+  * Reference: a glossary (DefinedTermSet markup) and an FAQ page (one combined FAQPage).
+  * Every article has Article markup, a topic call to action, related articles, and sources linked
+    inline in the text.
+* Testimonials: real, consented customer feedback only (see `docs/admin-guide.md`). Locked
+  placeholders exist in the admin; the public section invites reviews until real ones are
+  published. No review structured data is emitted, because self-published reviews are not
+  eligible for Google review snippets.

@@ -80,7 +80,13 @@ export function HomeHero({
   productCount: number;
   serviceCount: number;
 }) {
-  const slides = [IMAGES["wood-fired-oven-pizzas"], IMAGES["pizza-peel-oven"], IMAGES["tiled-oven-mouth"]];
+  const slides = [
+    IMAGES["wood-fired-oven-pizzas"],
+    IMAGES["cyclone-on-corrugated-roof"],
+    IMAGES["pizza-peel-oven"],
+    IMAGES["steel-roof-cyclone"],
+  ];
+  const cyclone = IMAGES["cyclone-on-corrugated-roof"];
   const pizza = IMAGES["margherita-round"];
   const regions = settings.regions_served.split(",").length;
 
@@ -147,12 +153,12 @@ export function HomeHero({
               <span className="pulse-ring absolute inline-flex h-full w-full rounded-full bg-orange" />
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-orange" />
             </span>
-            <FlameIcon className="text-orange" /> Pizza oven specialists · Nairobi
+            <FlameIcon className="text-orange" /> Pizza ovens · Roof cyclones · Nairobi
           </p>
 
           <h1
             id="home-title"
-            className="mt-6 font-display text-[2.7rem] font-extrabold leading-[1.02] tracking-tight sm:text-6xl lg:text-[4.6rem]"
+            className="mt-6 font-display text-[2.5rem] font-extrabold leading-[1.02] tracking-tight sm:text-[3.4rem] lg:text-[3.9rem]"
           >
             <span className="block">
               {accentWords.map((w, i) => (
@@ -199,13 +205,19 @@ export function HomeHero({
               href="/products"
               className="shine inline-flex min-h-13 items-center gap-2 rounded-full bg-orange px-7 text-lg font-bold text-navy shadow-[0_12px_40px_-10px_rgba(252,119,1,0.9)] transition-transform hover:-translate-y-0.5 hover:bg-orange-600"
             >
-              Shop oven materials <ArrowRightIcon />
+              Pizza oven materials <ArrowRightIcon />
             </Link>
             <Link
-              href="/services/pizza-oven-building"
-              className="inline-flex min-h-13 items-center rounded-full bg-white/10 px-7 text-lg font-bold text-white ring-1 ring-white/40 backdrop-blur transition-colors hover:bg-white hover:text-navy"
+              href="/categories/roof-cyclones"
+              className="inline-flex min-h-13 items-center gap-2 rounded-full bg-white px-7 text-lg font-bold text-navy transition-transform hover:-translate-y-0.5 hover:bg-mist"
             >
-              Get an oven built
+              Roof cyclones <ArrowRightIcon />
+            </Link>
+            <Link
+              href="/services"
+              className="inline-flex min-h-13 items-center rounded-full px-4 text-lg font-bold text-white underline decoration-orange decoration-2 underline-offset-4 hover:text-orange"
+            >
+              Our services
             </Link>
           </div>
 
@@ -219,7 +231,7 @@ export function HomeHero({
                 id="home-search"
                 name="q"
                 type="search"
-                placeholder="Search fire bricks, mortar, door rope…"
+                placeholder="Search fire bricks, roof cyclones, mortar…"
                 className="min-h-12 w-full bg-transparent px-3 text-white placeholder:text-white/60 outline-none"
               />
               <button type="submit" className="mr-1.5 min-h-10 rounded-full bg-white px-5 text-sm font-bold text-navy hover:bg-orange">
@@ -230,8 +242,8 @@ export function HomeHero({
 
           <dl className="rise mt-10 grid max-w-xl grid-cols-3 gap-4" style={style({ "--delay": "1.35s" })}>
             {[
-              { label: "Oven materials", value: productCount },
-              { label: "Oven services", value: serviceCount },
+              { label: "Products", value: productCount },
+              { label: "Services", value: serviceCount },
               { label: "Countries served", value: regions },
             ].map((stat) => (
               <div key={stat.label} className="rounded-2xl bg-white/5 p-4 ring-1 ring-white/10 backdrop-blur">
@@ -256,6 +268,19 @@ export function HomeHero({
               </div>
             </div>
           </div>
+
+          <Link
+            href="/categories/roof-cyclones"
+            className="float group absolute -right-2 -top-4 z-10 hidden w-36 flex-col items-center sm:flex lg:-right-8 lg:w-40"
+            style={style({ "--t": "6.5s", "--delay": "0.3s" })}
+          >
+            <span className="relative block aspect-square w-full overflow-hidden rounded-full border-[6px] border-[#07090f] shadow-2xl ring-2 ring-orange/70">
+              <Image src={cyclone.src} alt={cyclone.alt} fill placeholder="blur" sizes="320px" className="origin-[74%_22%] scale-[2.4] object-cover object-[74%_22%]" />
+            </span>
+            <span className="relative z-10 -mt-4 rounded-full bg-orange px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-navy shadow-lg group-hover:bg-white">
+              Roof cyclones
+            </span>
+          </Link>
 
           {CHIPS.map((chip) => (
             <Link
@@ -296,7 +321,7 @@ export function HomeHero({
               </ContactLink>
             )}
             <span className="whitespace-nowrap text-sm leading-tight">
-              <span className="block font-semibold">We build &amp; repair ovens</span>
+              <span className="block font-semibold">Ovens &amp; cyclones: call us</span>
               <span className="text-white/70">{settings.primary_phone}</span>
             </span>
           </div>

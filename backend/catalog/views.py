@@ -18,6 +18,7 @@ from .models import (
     PublishStatus,
     Redirect,
     Service,
+    Testimonial,
 )
 from .serializers import (
     ApplicationSerializer,
@@ -25,6 +26,7 @@ from .serializers import (
     ProductCardSerializer,
     ProductDetailSerializer,
     ServiceSerializer,
+    TestimonialSerializer,
 )
 
 PUBLISHED = PublishStatus.PUBLISHED
@@ -224,3 +226,17 @@ class ServiceDetailView(generics.RetrieveAPIView):
 
     def get_queryset(self):
         return ServiceListView().get_queryset()
+
+
+class TestimonialListView(generics.ListAPIView):
+    """Published, consented, non-placeholder testimonials only."""
+
+    serializer_class = TestimonialSerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        qs = Testimonial.objects.filter(status=PUBLISHED, consent_confirmed=True, is_placeholder=False)
+        topic = self.request.query_params.get("topic")
+        if topic:
+            qs = qs.filter(topic__in=[topic, Testimonial.Topic.GENERAL])
+        return qs.select_related("service")[:12]

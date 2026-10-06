@@ -13,6 +13,7 @@ from .models import (
     ProductVariant,
     PublishStatus,
     Service,
+    Testimonial,
 )
 
 
@@ -286,3 +287,14 @@ class ServiceSerializer(serializers.ModelSerializer):
     def get_related_products(self, obj):
         products = [p for p in obj.related_products.all() if p.status == PublishStatus.PUBLISHED]
         return ProductCardSerializer(products, many=True).data
+
+
+class TestimonialSerializer(serializers.ModelSerializer):
+    service = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Testimonial
+        fields = ["id", "customer_name", "customer_role", "location", "quote", "rating", "topic", "service", "received_on"]
+
+    def get_service(self, obj):
+        return {"name": obj.service.name, "slug": obj.service.slug} if obj.service else None

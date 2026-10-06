@@ -12,6 +12,7 @@ urlpatterns = [
     path("products/<slug:slug>/", views.ProductDetailView.as_view(), name="product-detail"),
     path("services/", views.ServiceListView.as_view(), name="service-list"),
     path("services/<slug:slug>/", views.ServiceDetailView.as_view(), name="service-detail"),
+    path("testimonials/", views.TestimonialListView.as_view(), name="testimonial-list"),
     path("sitemap/", views.SitemapView.as_view(), name="sitemap-data"),
     path("redirects/", views.RedirectLookupView.as_view(), name="redirect-lookup"),
 ]

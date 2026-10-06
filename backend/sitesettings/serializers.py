@@ -24,7 +24,7 @@ class SiteSettingsSerializer(serializers.ModelSerializer):
             "whatsapp_number_intl", "whatsapp_base_url",
             "email", "address_line", "hours_text", "regions_served",
             "contact_source_url", "contact_verified_on", "contact_form_enabled",
-            "production_origin", "ga_measurement_id",
+            "production_origin", "ga_measurement_id", "google_review_url",
             "homepage_headline", "homepage_intro",
             "logo_header_override",
         ]

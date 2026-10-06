@@ -10,6 +10,7 @@ from catalog.models import (
     ProductSpecification,
     ProductVariant,
     Service,
+    Testimonial,
 )
 from catalog.seed_data import APPLICATIONS, CATEGORIES, PRODUCTS, SERVICES
 from sitesettings.models import SiteSettings
@@ -30,7 +31,10 @@ VARIANT_FIELDS = ["thickness", "dimensions", "density", "diameter", "box_capacit
 # https://karivexsolutionsltd.com/ and /contact.
 CONTACTS_VERIFIED_ON = datetime.date(2026, 10, 6)
 
-OLD_HOMEPAGE_HEADLINE = "Industrial Materials for Construction, Insulation & High-Temperature Applications"
+OLD_HOMEPAGE_HEADLINES = {
+    "Industrial Materials for Construction, Insulation & High-Temperature Applications",
+    "Pizza Oven Materials, Building & Repair",
+}
 
 
 class Command(BaseCommand):
@@ -171,13 +175,30 @@ class Command(BaseCommand):
                 continue
             service.related_products.set([slugs[s] for s in data.get("related", []) if s in slugs])
 
+        if not Testimonial.objects.exists():
+            for order, (topic, text) in enumerate([
+                ("pizza", "[Placeholder] Replace with a real customer's words about an oven we built, repaired or supplied materials for."),
+                ("cyclones", "[Placeholder] Replace with a real customer's words about roof cyclones we supplied, installed or repaired."),
+                ("general", "[Placeholder] Replace with a real customer's words about our service, advice or delivery."),
+            ]):
+                Testimonial.objects.create(
+                    customer_name="Customer name (with permission)",
+                    customer_role="Optional: role, business",
+                    location="Optional: town",
+                    quote=text,
+                    topic=topic,
+                    order=order,
+                    is_placeholder=True,
+                )
+            created["testimonial_placeholders"] = 3
+
         site = SiteSettings.load()
         changed = False
         if site.contact_verified_on is None:
             site.contact_verified_on = CONTACTS_VERIFIED_ON
             changed = True
         # Move an untouched pre-pizza-focus headline to the new default.
-        if site.homepage_headline == OLD_HOMEPAGE_HEADLINE:
+        if site.homepage_headline in OLD_HOMEPAGE_HEADLINES:
             site.homepage_headline = SiteSettings._meta.get_field("homepage_headline").default
             changed = True
         if changed:
