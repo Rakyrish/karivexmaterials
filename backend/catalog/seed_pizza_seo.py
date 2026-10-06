@@ -157,8 +157,8 @@ SERVICE_SEO = {
         ),
     },
     "delivery-of-materials": {
-        "seo_title": "Delivery of Pizza Oven Materials",
-        "seo_description": "Delivery of fire bricks, refractory cement, insulation and other pizza oven materials to your site, quoted with your order.",
+        "seo_title": "Delivery of Pizza Oven Materials & Roof Cyclones",
+        "seo_description": "Delivery of fire bricks, refractory cement, insulation, other pizza oven materials and roof cyclones to your site, quoted with your order.",
         "faqs": (
             "Q: How much does delivery cost?\n"
             "A: Delivery is quoted with your order based on the location and the quantity of materials.\n\n"

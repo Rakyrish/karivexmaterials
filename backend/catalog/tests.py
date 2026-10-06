@@ -67,9 +67,12 @@ class SeedTests(SeededCatalogTestCase):
         self.assertEqual(Product.objects.get(slug="eps-boxes").status, PublishStatus.ARCHIVED)
         self.assertEqual(
             set(Category.objects.filter(status="published").values_list("short_code", flat=True)),
-            {"OF", "OD", "OI", "OS"},
+            {"OF", "OD", "OI", "OS", "RC"},
         )
-        self.assertEqual(Service.objects.filter(status="published").count(), 4)
+        self.assertEqual(Service.objects.filter(status="published").count(), 5)
+        self.assertEqual(
+            Product.objects.get(slug="roof-ventilators-roof-cyclones").status, PublishStatus.PUBLISHED
+        )
 
 
 class PublicApiTests(SeededCatalogTestCase):
@@ -101,6 +104,8 @@ class PublicApiTests(SeededCatalogTestCase):
             ("firebrick", "fire-bricks-refractory-bricks"),
             ("oven door seal", "ceramic-fibre-rope"),
             ("pizza oven floor", "hearth-materials"),
+            ("whirlybird", "roof-ventilators-roof-cyclones"),
+            ("turbine ventilator", "roof-ventilators-roof-cyclones"),
         ]:
             response = self.client.get("/api/v1/products/", {"q": query})
             slugs = [p["slug"] for p in response.json()["results"]]
@@ -165,7 +170,7 @@ class ServiceApiTests(SeededCatalogTestCase):
         self.assertEqual(
             [s["slug"] for s in services],
             ["pizza-oven-building", "pizza-oven-repair-relining", "pizza-oven-material-advice",
-             "delivery-of-materials"],
+             "delivery-of-materials", "roof-cyclone-repair"],
         )
         detail = self.client.get("/api/v1/services/pizza-oven-building/").json()
         self.assertTrue(detail["includes"])

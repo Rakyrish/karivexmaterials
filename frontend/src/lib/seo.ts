@@ -88,12 +88,19 @@ export function organizationJsonLd(settings: SiteSettings, services: ServiceRef[
       email: settings.email,
       ...(settings.hours_text === VERIFIED_HOURS_TEXT ? { hoursAvailable: VERIFIED_HOURS } : {}),
     })),
-    knowsAbout: ["Pizza ovens", "Refractory materials", "Fire bricks", "Oven insulation"],
+    knowsAbout: [
+      "Pizza ovens",
+      "Refractory materials",
+      "Fire bricks",
+      "Oven insulation",
+      "Roof cyclones",
+      "Turbine roof ventilators",
+    ],
     ...(services.length
       ? {
           hasOfferCatalog: {
             "@type": "OfferCatalog",
-            name: "Pizza oven services",
+            name: "Pizza oven and roof cyclone services",
             itemListElement: services.map((service) => ({
               "@type": "Offer",
               itemOffered: {

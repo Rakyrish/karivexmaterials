@@ -13,7 +13,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: absoluteUrl("/"), lastModified: catalogUpdated, images: [absoluteUrl(HERO_IMAGE.src.src)] },
     { url: absoluteUrl("/products"), lastModified: catalogUpdated },
     { url: absoluteUrl("/services") },
+    { url: absoluteUrl("/guides") },
     { url: absoluteUrl("/pizza-oven-guide"), images: [absoluteUrl(IMAGES["oven-fire-floor"].src.src)] },
+    {
+      url: absoluteUrl("/roof-cyclone-guide"),
+      images: [absoluteUrl(IMAGES["roof-cyclone-closeup"].src.src), absoluteUrl(IMAGES["industrial-roof-cyclones"].src.src)],
+    },
     { url: absoluteUrl("/categories") },
     { url: absoluteUrl("/applications") },
     { url: absoluteUrl("/about") },

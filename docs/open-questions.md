@@ -66,6 +66,12 @@ These pages are published with factual product-type descriptions; specific specs
 * Whether material advice is free (it is not described as free)
 * Confirmed prices for any product, to enable Offer markup and product rich results
 
+## Roof cyclones: details to confirm
+
+* Throat sizes (e.g. 500 mm / 600 mm), materials (aluminium, stainless, galvanised) and base types stocked
+* Prices, if they are to be shown (this enables product rich results)
+* Repair service area, roof-access arrangements, and whether new installations are offered
+
 ## Missing assets and credentials
 
 * **Product photography:** none supplied. Pizza products show labelled illustrative stock photos

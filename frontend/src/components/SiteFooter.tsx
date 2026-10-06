@@ -34,7 +34,7 @@ export function SiteFooter({
         </div>
 
         <nav aria-label="Materials and services">
-          <h2 className="font-display text-base font-bold uppercase tracking-wider text-orange">Oven materials</h2>
+          <h2 className="font-display text-base font-bold uppercase tracking-wider text-orange">Products</h2>
           <ul className="mt-4 space-y-2 text-sm">
             {categories.map((category) => (
               <li key={category.slug}>
@@ -62,6 +62,7 @@ export function SiteFooter({
             {[
               ["/products", "All oven materials"],
               ["/pizza-oven-guide", "Pizza oven guide"],
+              ["/roof-cyclone-guide", "Roof cyclone guide"],
               ["/applications", "Oven projects"],
               ["/quote", "Request a quote"],
               ["/about", "About the division"],

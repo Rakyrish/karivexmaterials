@@ -92,7 +92,14 @@ export default function PizzaOvenGuidePage() {
       <PageHero
         eyebrow="Guide"
         title="How a pizza oven is built"
-        breadcrumbs={<Breadcrumbs items={[{ name: "Pizza oven guide", href: "/pizza-oven-guide" }]} />}
+        breadcrumbs={
+          <Breadcrumbs
+            items={[
+              { name: "Guides", href: "/guides" },
+              { name: "Pizza oven guide", href: "/pizza-oven-guide" },
+            ]}
+          />
+        }
       >
         <p>
           A short, practical overview of the layers in a masonry pizza oven, the materials used in each, and how a

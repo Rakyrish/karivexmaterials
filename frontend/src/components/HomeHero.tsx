@@ -1,14 +1,71 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { CSSProperties } from "react";
 
 import { IMAGES } from "@/lib/images";
 import type { SiteSettings } from "@/lib/types";
 
 import { ContactLink } from "./ContactLink";
-import { ArrowRightIcon, CheckIcon, FlameIcon, PhoneIcon, SearchIcon, WhatsAppIcon } from "./Icons";
+import { CountUp } from "./CountUp";
+import { ArrowRightIcon, FlameIcon, PhoneIcon, SearchIcon, WhatsAppIcon } from "./Icons";
 
-/** Landing hero: copy and actions on the left, a photo collage of a real
- * wood-fired oven and pizza on the right. Counts come from live records. */
+/* Fixed (not random) values so server and client render identically. */
+const EMBERS = [
+  { left: "6%", s: 5, x: 30, t: 9, d: 0 },
+  { left: "12%", s: 3, x: -20, t: 11, d: 2.5 },
+  { left: "19%", s: 6, x: 40, t: 8, d: 5 },
+  { left: "27%", s: 4, x: -35, t: 12, d: 1 },
+  { left: "34%", s: 3, x: 25, t: 10, d: 6.5 },
+  { left: "42%", s: 5, x: -15, t: 9.5, d: 3.5 },
+  { left: "49%", s: 4, x: 30, t: 11.5, d: 8 },
+  { left: "56%", s: 7, x: -40, t: 8.5, d: 0.8 },
+  { left: "62%", s: 3, x: 20, t: 13, d: 4.2 },
+  { left: "68%", s: 5, x: -25, t: 9, d: 7 },
+  { left: "74%", s: 6, x: 35, t: 10.5, d: 2 },
+  { left: "80%", s: 4, x: -30, t: 12.5, d: 5.8 },
+  { left: "86%", s: 5, x: 15, t: 8, d: 9 },
+  { left: "92%", s: 3, x: -10, t: 11, d: 3 },
+  { left: "97%", s: 4, x: -45, t: 9.8, d: 6 },
+];
+
+// Whole sentences rotate (no gaps); the verb is highlighted.
+const ROTATING: [string, string][] = [
+  ["build", "pizza ovens."],
+  ["repair & reline", "pizza ovens."],
+  ["supply", "roof cyclones."],
+  ["repair", "roof cyclones."],
+  ["deliver", "to your site."],
+];
+
+const CHIPS = [
+  { label: "Fire bricks", href: "/products/fire-bricks-refractory-bricks", pos: "left-[-6%] top-[14%]", t: 6, delay: 0 },
+  { label: "Refractory mortar", href: "/products/refractory-mortar", pos: "right-[-8%] top-[30%]", t: 7, delay: 1.2 },
+  { label: "Ceramic fibre", href: "/products/ceramic-fibre-blanket", pos: "left-[-10%] bottom-[24%]", t: 6.5, delay: 0.6 },
+  { label: "Roof cyclones", href: "/categories/roof-cyclones", pos: "right-[-2%] bottom-[10%]", t: 5.5, delay: 1.8 },
+];
+
+const TICKER = [
+  "Fire bricks",
+  "Refractory mortar",
+  "Refractory cement",
+  "Castable",
+  "Ceramic fibre blanket",
+  "Vermiculite",
+  "Perlite",
+  "Door seal rope",
+  "High-temperature sealants",
+  "Roof cyclones",
+  "Cyclone repair",
+  "Oven building",
+  "Repair & relining",
+  "Material advice",
+  "Delivery to site",
+];
+
+const style = (vars: Record<string, string | number>) => vars as CSSProperties;
+
+/** Animated landing hero. All motion is decorative CSS and is switched off
+ * for visitors who prefer reduced motion (see globals.css). */
 export function HomeHero({
   settings,
   intro,
@@ -22,55 +79,140 @@ export function HomeHero({
   productCount: number;
   serviceCount: number;
 }) {
-  const oven = IMAGES["pizza-peel-oven"];
-  const pizza = IMAGES["neapolitan-pizza"];
+  const slides = [IMAGES["wood-fired-oven-pizzas"], IMAGES["pizza-peel-oven"], IMAGES["tiled-oven-mouth"]];
+  const pizza = IMAGES["margherita-round"];
   const regions = settings.regions_served.split(",").length;
 
+  // "Pizza Oven Materials, Building & Repair" -> accent the part before the comma.
+  const [accent, ...restParts] = settings.homepage_headline.split(",");
+  const rest = restParts.join(",").trim();
+  const accentWords = accent.trim().split(/\s+/);
+  const restWords = rest ? rest.split(/\s+/) : [];
+  let wordIndex = 0;
+  const word = (text: string, extra = "") => {
+    const delay = 0.15 + wordIndex++ * 0.09;
+    return (
+      <span key={`${text}-${delay}`} className={`rise inline-block ${extra}`} style={style({ "--delay": `${delay}s` })}>
+        {text}
+      </span>
+    );
+  };
+
   return (
-    <section
-      aria-labelledby="home-title"
-      className="relative isolate overflow-hidden bg-[#0b0f1a] text-white"
-    >
-      {/* Ember glow + texture — decorative. */}
+    <section aria-labelledby="home-title" className="relative isolate overflow-hidden bg-[#07090f] text-white">
+      {/* Background slideshow */}
+      <div aria-hidden="true" className="absolute inset-0 -z-20">
+        {slides.map((slide, index) => (
+          <div key={slide.key} className="hero-slide absolute inset-0" style={{ animationDelay: `${index * 7 - 1.7}s` }}>
+            <Image
+              src={slide.src}
+              alt=""
+              fill
+              preload={index === 0}
+              placeholder="blur"
+              sizes="100vw"
+              quality={75}
+              className="object-cover"
+            />
+          </div>
+        ))}
+      </div>
+      {/* Legibility overlays + oven glow + texture */}
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-[#07090f] via-[#07090f]/85 to-[#07090f]/35" />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-[#07090f] via-transparent to-[#07090f]/40" />
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[radial-gradient(60%_70%_at_75%_55%,rgba(252,119,1,0.35),transparent_65%),radial-gradient(45%_60%_at_10%_0%,rgba(2,21,51,0.9),transparent_70%)]"
+        className="hero-glow absolute inset-x-0 bottom-0 -z-10 h-2/3 bg-[radial-gradient(55%_60%_at_70%_100%,rgba(252,119,1,0.45),transparent_70%)]"
       />
-      <div aria-hidden="true" className="hex-texture absolute inset-0 -z-10 opacity-60" />
+      <div aria-hidden="true" className="hex-texture absolute inset-0 -z-10 opacity-40" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        {EMBERS.map((e) => (
+          <span
+            key={e.left}
+            className="ember"
+            style={style({ left: e.left, "--s": `${e.s}px`, "--x": `${e.x}px`, "--t": `${e.t}s`, "--d": `${e.d}s` })}
+          />
+        ))}
+      </div>
 
-      <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_1fr] lg:py-24">
+      <div className="mx-auto grid max-w-7xl items-center gap-14 px-4 pb-16 pt-12 sm:px-6 sm:pt-16 lg:min-h-[42rem] lg:grid-cols-[1.1fr_1fr] lg:pb-20 lg:pt-20">
+        {/* Copy */}
         <div>
-          <p className="inline-flex items-center gap-2 rounded-full bg-orange/15 px-3 py-1 text-sm font-semibold text-orange ring-1 ring-orange/40">
-            <FlameIcon /> Pizza oven specialists · {settings.relationship_wording}
+          <p
+            className="rise inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-sm font-semibold text-white ring-1 ring-white/20 backdrop-blur"
+            style={style({ "--delay": "0s" })}
+          >
+            <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
+              <span className="pulse-ring absolute inline-flex h-full w-full rounded-full bg-orange" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-orange" />
+            </span>
+            <FlameIcon className="text-orange" /> Pizza oven specialists · Nairobi
           </p>
+
           <h1
             id="home-title"
-            className="mt-6 font-display text-[2.6rem] font-extrabold leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl"
+            className="mt-6 font-display text-[2.7rem] font-extrabold leading-[1.02] tracking-tight sm:text-6xl lg:text-[4.6rem]"
           >
-            {settings.homepage_headline}
+            <span className="block">
+              {accentWords.map((w, i) => (
+                <span key={i}>
+                  {word(w, "fire-text")}
+                  {i < accentWords.length - 1 || rest ? " " : ""}
+                </span>
+              ))}
+              {rest && <span className="sr-only">,</span>}
+            </span>
+            {rest && (
+              <span className="block">
+                {restWords.map((w, i) => (
+                  <span key={i}>
+                    {word(w)}
+                    {i < restWords.length - 1 ? " " : ""}
+                  </span>
+                ))}
+              </span>
+            )}
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/80">{intro}</p>
 
-          <div className="mt-8 flex flex-wrap gap-3">
+          <p className="rise mt-5 text-lg font-semibold text-white/90 sm:text-2xl" style={style({ "--delay": "0.75s" })}>
+            <span className="sr-only">
+              We build, repair and reline pizza ovens, supply and repair roof cyclones, and deliver to your site.
+            </span>
+            <span aria-hidden="true" className="rotator">
+              <span>
+                {[...ROTATING, ROTATING[0]].map(([verb, rest], i) => (
+                  <span key={i}>
+                    We <span className="text-orange">{verb}</span> {rest}
+                  </span>
+                ))}
+              </span>
+            </span>
+          </p>
+
+          <p className="rise mt-5 max-w-xl text-lg leading-relaxed text-white/75" style={style({ "--delay": "0.9s" })}>
+            {intro}
+          </p>
+
+          <div className="rise mt-8 flex flex-wrap gap-3" style={style({ "--delay": "1.05s" })}>
             <Link
               href="/products"
-              className="inline-flex min-h-13 items-center gap-2 rounded-full bg-orange px-7 text-lg font-bold text-navy shadow-[0_10px_30px_-10px_rgba(252,119,1,0.8)] hover:bg-orange-600"
+              className="shine inline-flex min-h-13 items-center gap-2 rounded-full bg-orange px-7 text-lg font-bold text-navy shadow-[0_12px_40px_-10px_rgba(252,119,1,0.9)] transition-transform hover:-translate-y-0.5 hover:bg-orange-600"
             >
               Shop oven materials <ArrowRightIcon />
             </Link>
             <Link
               href="/services/pizza-oven-building"
-              className="inline-flex min-h-13 items-center rounded-full border-2 border-white/80 px-7 text-lg font-bold text-white hover:bg-white hover:text-navy"
+              className="inline-flex min-h-13 items-center rounded-full bg-white/10 px-7 text-lg font-bold text-white ring-1 ring-white/40 backdrop-blur transition-colors hover:bg-white hover:text-navy"
             >
               Get an oven built
             </Link>
           </div>
 
-          <form action="/products" role="search" className="mt-8 max-w-xl">
+          <form action="/products" role="search" className="rise mt-7 max-w-xl" style={style({ "--delay": "1.2s" })}>
             <label htmlFor="home-search" className="sr-only">
               Search oven materials
             </label>
-            <div className="flex items-center overflow-hidden rounded-full bg-white/10 ring-1 ring-white/20 focus-within:ring-orange">
+            <div className="flex items-center overflow-hidden rounded-full bg-white/10 ring-1 ring-white/20 backdrop-blur transition-shadow focus-within:ring-2 focus-within:ring-orange">
               <SearchIcon className="ml-5 shrink-0 text-white/70" />
               <input
                 id="home-search"
@@ -85,62 +227,58 @@ export function HomeHero({
             </div>
           </form>
 
-          <dl className="mt-10 grid max-w-xl grid-cols-3 gap-4 border-t border-white/15 pt-6">
-            <div>
-              <dt className="text-xs uppercase tracking-wider text-white/60">Oven materials</dt>
-              <dd className="font-display text-3xl font-extrabold text-orange">{productCount}</dd>
-            </div>
-            <div>
-              <dt className="text-xs uppercase tracking-wider text-white/60">Oven services</dt>
-              <dd className="font-display text-3xl font-extrabold text-orange">{serviceCount}</dd>
-            </div>
-            <div>
-              <dt className="text-xs uppercase tracking-wider text-white/60">Countries served</dt>
-              <dd className="font-display text-3xl font-extrabold text-orange">{regions}</dd>
-            </div>
+          <dl className="rise mt-10 grid max-w-xl grid-cols-3 gap-4" style={style({ "--delay": "1.35s" })}>
+            {[
+              { label: "Oven materials", value: productCount },
+              { label: "Oven services", value: serviceCount },
+              { label: "Countries served", value: regions },
+            ].map((stat) => (
+              <div key={stat.label} className="rounded-2xl bg-white/5 p-4 ring-1 ring-white/10 backdrop-blur">
+                <dt className="text-[0.7rem] font-semibold uppercase tracking-wider text-white/60">{stat.label}</dt>
+                <dd className="mt-1 font-display text-4xl font-extrabold text-orange">
+                  <CountUp value={stat.value} />
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
 
-        {/* Photo collage */}
-        <div className="relative mx-auto w-full max-w-xl pb-10 lg:pb-0">
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] shadow-2xl ring-1 ring-white/10 sm:aspect-[5/6]">
-            <Image
-              src={oven.src}
-              alt={oven.alt}
-              fill
-              preload
-              placeholder="blur"
-              sizes="(min-width:1024px) 40vw, 90vw"
-              className="object-cover object-[62%_50%]"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" aria-hidden="true" />
-            <div className="absolute inset-x-5 bottom-5 rounded-2xl bg-white/95 p-4 text-ink shadow-xl backdrop-blur sm:inset-x-auto sm:left-5 sm:w-60">
-              <p className="font-display text-lg font-bold text-navy">We build & repair ovens</p>
-              <ul className="mt-2 space-y-1 text-sm">
-                {["New pizza ovens", "Relining & repairs", "Delivery to site"].map((item) => (
-                  <li key={item} className="flex items-center gap-2">
-                    <CheckIcon className="text-orange-600" /> {item}
-                  </li>
-                ))}
-              </ul>
-              <Link href="/services" className="mt-3 inline-flex items-center gap-1 text-sm font-bold text-navy underline">
-                See services <ArrowRightIcon />
-              </Link>
+        {/* Turntable pizza with floating chips and contact card */}
+        <div className="relative mx-auto aspect-square w-full max-w-[22rem] sm:max-w-md lg:max-w-[34rem]">
+          <div aria-hidden="true" className="absolute inset-[6%] rounded-full bg-orange/30 blur-3xl" />
+          <div aria-hidden="true" className="pulse-ring absolute inset-[8%] rounded-full ring-2 ring-orange/60" />
+          <div className="rise absolute inset-[8%]" style={style({ "--delay": "0.4s" })}>
+            {/* Wooden-peel style plate under the turning pizza */}
+            <div className="relative h-full w-full rounded-full bg-[radial-gradient(circle_at_35%_30%,#3a2a1c,#1b130c_70%)] p-[4%] shadow-[0_40px_90px_-20px_rgba(0,0,0,0.95)] ring-1 ring-white/10">
+              <div className="spin-slow relative h-full w-full">
+                <Image src={pizza.src} alt={pizza.alt} fill sizes="(min-width:1024px) 30rem, 80vw" className="object-contain drop-shadow-[0_8px_18px_rgba(0,0,0,0.6)]" />
+              </div>
             </div>
           </div>
 
-          <div className="absolute -left-4 -top-6 hidden aspect-square w-44 overflow-hidden rounded-full border-[6px] border-[#0b0f1a] shadow-2xl sm:block lg:-left-12 lg:w-52">
-            <Image src={pizza.src} alt={pizza.alt} fill placeholder="blur" sizes="208px" className="object-cover object-[35%_50%]" />
-          </div>
+          {CHIPS.map((chip) => (
+            <Link
+              key={chip.label}
+              href={chip.href}
+              className={`float absolute hidden ${chip.pos} items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-sm font-bold text-navy shadow-xl ring-1 ring-black/5 transition-colors hover:bg-orange sm:inline-flex`}
+              style={style({ "--t": `${chip.t}s`, "--delay": `${chip.delay}s` })}
+            >
+              <span className="h-2 w-2 rounded-full bg-orange" aria-hidden="true" />
+              {chip.label}
+            </Link>
+          ))}
 
-          <div className="absolute -bottom-2 right-4 flex items-center gap-3 rounded-2xl bg-navy px-4 py-3 shadow-xl ring-1 ring-white/10 sm:-right-4 sm:bottom-auto sm:top-8">
+          <div
+            className="float absolute bottom-[-2%] left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-2xl bg-navy/95 px-4 py-3 shadow-2xl ring-1 ring-white/15 backdrop-blur lg:left-[2%] lg:translate-x-0"
+            style={style({ "--t": "7s", "--delay": "0.9s" })}
+          >
             {settings.primary_phone_href && (
               <ContactLink
                 kind="phone"
                 href={settings.primary_phone_href}
                 placement="home_hero"
                 ariaLabel={`Call ${settings.primary_phone}`}
-                className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-lg text-navy hover:bg-orange"
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-orange text-lg text-navy hover:bg-white"
               >
                 <PhoneIcon />
               </ContactLink>
@@ -151,25 +289,43 @@ export function HomeHero({
                 href={whatsapp}
                 placement="home_hero"
                 ariaLabel="Chat on WhatsApp"
-                className="flex h-11 w-11 items-center justify-center rounded-full bg-[#1f7a43] text-xl text-white hover:bg-[#17633a]"
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-[#25D366] text-xl text-white hover:bg-white hover:text-[#1f7a43]"
               >
                 <WhatsAppIcon />
               </ContactLink>
             )}
-            <span className="text-sm leading-tight">
-              <span className="block font-semibold">Talk to us</span>
+            <span className="whitespace-nowrap text-sm leading-tight">
+              <span className="block font-semibold">We build &amp; repair ovens</span>
               <span className="text-white/70">{settings.primary_phone}</span>
             </span>
           </div>
-
-          <p className="absolute -bottom-8 right-2 text-[0.65rem] text-white/45 lg:-bottom-6">
-            Illustrative photos ·{" "}
-            <Link href="/image-credits" className="underline">
-              credits
-            </Link>
-          </p>
         </div>
       </div>
+
+      {/* Ticker */}
+      <div className="marquee relative border-y border-white/10 bg-black/40 py-3 backdrop-blur" aria-hidden="true">
+        <div className="marquee-track flex w-max gap-10 whitespace-nowrap">
+          {[...TICKER, ...TICKER].map((item, i) => (
+            <span key={i} className="inline-flex items-center gap-10 text-sm font-semibold uppercase tracking-[0.18em] text-white/80">
+              {item}
+              <FlameIcon className="text-orange" />
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="pointer-events-none absolute bottom-16 left-1/2 hidden -translate-x-1/2 lg:block" aria-hidden="true">
+        <span className="scroll-cue block h-9 w-5 rounded-full border-2 border-white/40">
+          <span className="mx-auto mt-1.5 block h-2 w-1 rounded-full bg-white/70" />
+        </span>
+      </div>
+
+      <p className="absolute bottom-14 right-3 text-[0.65rem] text-white/45">
+        Illustrative photos ·{" "}
+        <Link href="/image-credits" className="underline">
+          credits
+        </Link>
+      </p>
     </section>
   );
 }

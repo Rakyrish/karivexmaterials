@@ -118,5 +118,56 @@
     "license": "CC BY 2.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
     "sourcePage": "https://commons.wikimedia.org/wiki/File:Oven_at_Punch_Pizza,_Highland_Park,_Saint_Paul_(2198176403).jpg"
+  },
+  {
+    "key": "margherita-round",
+    "file": "margherita-round.webp",
+    "alt": "A round margherita pizza with basil, seen from above",
+    "width": 1100,
+    "height": 1100,
+    "title": "Margherita Originale.JPG",
+    "artist": "Mario56",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Margherita_Originale.JPG",
+    "note": "Cropped, perspective-adjusted to a circle and cut out from the original photo."
+  },
+  {
+    "key": "roof-cyclone-closeup",
+    "file": "roof-cyclone-closeup.jpg",
+    "alt": "A weathered roof cyclone (turbine ventilator) with curved vanes on its throat, against city buildings",
+    "width": 1920,
+    "height": 1280,
+    "title": "Roof Turbine Ventilator.jpg",
+    "artist": "Saud",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Roof_Turbine_Ventilator.jpg"
+  },
+  {
+    "key": "roof-cyclone-vanes",
+    "file": "roof-cyclone-vanes.jpg",
+    "alt": "Close-up of the curved vanes and top bearing of a roof cyclone, showing dirt and wear",
+    "width": 1578,
+    "height": 1237,
+    "title": "Roof Turbine Ventilator.jpg",
+    "artist": "Saud",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Roof_Turbine_Ventilator.jpg",
+    "note": "Cropped detail of the original photo."
+  },
+  {
+    "key": "industrial-roof-cyclones",
+    "file": "industrial-roof-cyclones.jpg",
+    "alt": "A row of roof cyclones along the ridge of a large industrial building",
+    "width": 1086,
+    "height": 360,
+    "title": "Roof Turbines.jpg",
+    "artist": "Qwexcxewq",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Roof_Turbines.jpg",
+    "note": "Cropped from the original photo."
   }
 ]

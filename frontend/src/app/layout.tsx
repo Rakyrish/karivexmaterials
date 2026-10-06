@@ -24,7 +24,7 @@ const barlow = Barlow({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_ORIGIN),
   title: {
-    default: "KariVex Industrial Materials | Pizza Oven Materials, Building & Repair",
+    default: "KariVex Industrial Materials | Pizza Ovens & Roof Cyclones",
     template: "%s | KariVex Industrial Materials",
   },
   applicationName: "KariVex Industrial Materials",

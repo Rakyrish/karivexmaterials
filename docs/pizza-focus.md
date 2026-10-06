@@ -71,3 +71,29 @@ At the owner's request, the primary number is now **+254 742 355548** and the al
 **+254 710 851911** (data migration `sitesettings/0005`). WhatsApp still uses `wa.me/254710851911`,
 the destination used by the live company site. Change it in **Site settings** if WhatsApp should
 move to 0742 355548 too. Floating call, WhatsApp and email buttons appear on every page.
+
+## Roof cyclones (added 6 October 2026)
+
+At the owner's request the site also sells and repairs **roof cyclones** (turbine roof ventilators,
+"whirlybirds"):
+
+* Category `/categories/roof-cyclones`; product `/products/roof-ventilators-roof-cyclones` (the
+  original catalogue item, now published with new copy, search text and FAQs).
+* Service `/services/roof-cyclone-repair` (bearings, heads, base reseals, supply of replacements).
+* Project page `/applications/roof-ventilation`; guide `/roof-cyclone-guide` (Article + FAQ markup,
+  references linked inline); guides index `/guides`.
+* Homepage: cyclone section with photos, a "Roof cyclones" hero tag and ticker items; the hero's
+  rotating line includes "We supply / repair roof cyclones".
+* Photos: two Wikimedia Commons images (plus one cropped detail); see `/image-credits`.
+  These were the only freely licensed roof-cyclone photos on Commons. Upload your own in the admin.
+* Content source: `backend/catalog/seed_cyclones.py`.
+
+Not published until confirmed: the cyclone sizes, materials and base types you stock, prices, and
+whether new installations (as opposed to repairs) are offered.
+
+## Animated hero
+
+The homepage hero is CSS-animated: a crossfading slow-zoom photo slideshow, rising embers, a
+fire-gradient headline, rotating service sentences, a turning pizza (a cut-out derivative of a
+licensed photo), floating tags, count-up stats and a ticker. Visitors with "reduce motion"
+enabled get a static version.

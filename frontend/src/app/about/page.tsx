@@ -10,9 +10,9 @@ import { IMAGES } from "@/lib/images";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "About Us — Pizza Oven Materials & Services",
+  title: "About Us — Pizza Ovens & Roof Cyclones",
   description:
-    "KariVex Industrial Materials, the Industrial Materials Division of KariVex Solutions Ltd, supplies pizza oven materials and builds, repairs and delivers for pizza ovens from Nairobi.",
+    "KariVex Industrial Materials, the Industrial Materials Division of KariVex Solutions Ltd, supplies pizza oven materials, builds and repairs pizza ovens, and supplies and repairs roof cyclones from Nairobi.",
   path: "/about",
 });
 
@@ -24,14 +24,15 @@ export default async function AboutPage() {
       <PageHero title="About KariVex Industrial Materials" breadcrumbs={<Breadcrumbs items={[{ name: "About", href: "/about" }]} />}>
         <p>
           {settings.site_name} is the {settings.division_descriptor} of {settings.parent_company_name}. It is a
-          division of the company, not a separately registered business. Our focus is pizza ovens: the materials that
-          go into them, and building, repairing and delivering for them.
+          division of the company, not a separately registered business. Our focus is pizza ovens — the materials that
+          go into them, and building, repairing and delivering for them — and roof cyclones, which we supply and
+          repair.
         </p>
       </PageHero>
       <Container className="grid gap-12 py-12 lg:grid-cols-[1.5fr_1fr]">
         <div className="prose-copy max-w-3xl space-y-4 text-lg text-ink">
           <h2 className="font-display text-2xl font-bold text-navy">What we supply</h2>
-          <p>Materials for every part of a pizza oven:</p>
+          <p>Materials for every part of a pizza oven, and roof cyclones:</p>
           <ul className="list-disc space-y-1 pl-6 text-base">
             {categories.map((category) => (
               <li key={category.slug}>
@@ -54,7 +55,7 @@ export default async function AboutPage() {
             ))}
           </ul>
           <p>
-            We work with pizzerias, restaurants, hotels, bakeries, oven builders and home owners. Every oven is
+            We work with pizzerias, restaurants, hotels, bakeries, oven builders, factories, warehouses and home owners. Every oven is
             different, so we quote materials and work against your oven size, design and location rather than
             publishing fixed prices.
           </p>

@@ -13,8 +13,9 @@ import { MobileMenu } from "./MobileMenu";
 
 export const NAV_LINKS = [
   { href: "/products", label: "Oven Materials" },
+  { href: "/categories/roof-cyclones", label: "Roof Cyclones" },
   { href: "/services", label: "Services" },
-  { href: "/pizza-oven-guide", label: "Oven Guide" },
+  { href: "/guides", label: "Guides" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];

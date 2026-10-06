@@ -44,7 +44,9 @@ export default function ImageCreditsPage() {
                     Source
                   </a>
                 </p>
-                <p className="text-xs text-slate">Resized and re-compressed for the web.</p>
+                <p className="text-xs text-slate">
+                  {"note" in credit && credit.note ? credit.note : "Resized and re-compressed for the web."}
+                </p>
               </div>
             </li>
           ))}

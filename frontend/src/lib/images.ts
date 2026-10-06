@@ -1,7 +1,11 @@
 import type { StaticImageData } from "next/image";
 
+import cycloneCloseup from "@/assets/cyclones/roof-cyclone-closeup.jpg";
+import cycloneVanes from "@/assets/cyclones/roof-cyclone-vanes.jpg";
+import cycloneRoof from "@/assets/cyclones/industrial-roof-cyclones.jpg";
 import firebrick from "@/assets/pizza/fire-brick.jpg";
 import margherita from "@/assets/pizza/margherita-pizza.jpg";
+import margheritaRound from "@/assets/pizza/margherita-round.webp";
 import neapolitan from "@/assets/pizza/neapolitan-pizza.jpg";
 import ovenFireFloor from "@/assets/pizza/oven-fire-floor.jpg";
 import peelOven from "@/assets/pizza/pizza-peel-oven.jpg";
@@ -31,8 +35,12 @@ const SOURCES: Record<string, StaticImageData> = {
   "tiled-oven-mouth": tiledOven,
   vermiculite,
   "margherita-pizza": margherita,
+  "margherita-round": margheritaRound,
   "neapolitan-pizza": neapolitan,
   "pizzeria-brick-oven": pizzeriaOven,
+  "roof-cyclone-closeup": cycloneCloseup,
+  "roof-cyclone-vanes": cycloneVanes,
+  "industrial-roof-cyclones": cycloneRoof,
 };
 
 export const IMAGES: Record<string, IllustrativeImage> = Object.fromEntries(
@@ -48,12 +56,14 @@ const CATEGORY_IMAGES: Record<string, string> = {
   "dome-walls-bonding": "pizzeria-brick-oven",
   "pizza-oven-insulation": "vermiculite",
   "door-seals-finishing": "tiled-oven-mouth",
+  "roof-cyclones": "roof-cyclone-closeup",
 };
 
 const SERVICE_IMAGES: Record<string, string> = {
   "pizza-oven-building": "pizza-peel-oven",
   "pizza-oven-repair-relining": "pizzeria-brick-oven",
   "pizza-oven-material-advice": "fire-brick",
+  "roof-cyclone-repair": "roof-cyclone-vanes",
 };
 
 const APPLICATION_IMAGES: Record<string, string> = {
@@ -61,12 +71,14 @@ const APPLICATION_IMAGES: Record<string, string> = {
   "pizza-oven-repair": "pizzeria-brick-oven",
   "pizzerias-restaurants": "pizzaiolo-oven",
   "home-garden-pizza-ovens": "pizza-peel-oven",
+  "roof-ventilation": "industrial-roof-cyclones",
 };
 
 // Products whose material type is itself shown in a stock photo.
 const PRODUCT_IMAGES: Record<string, string> = {
   "fire-bricks-refractory-bricks": "fire-brick",
   vermiculite: "vermiculite",
+  "roof-ventilators-roof-cyclones": "roof-cyclone-closeup",
 };
 
 const pick = (key: string | undefined) => (key ? IMAGES[key] : undefined);

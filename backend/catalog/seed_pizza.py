@@ -269,10 +269,10 @@ PIZZA_SERVICES = [
         "name": "Delivery of Materials",
         "order": 4,
         "status": "published",
-        "summary": "Delivery of your oven materials to your site.",
+        "summary": "Delivery of pizza oven materials and roof cyclones to your site.",
         "description": (
-            "We can deliver pizza oven materials to your site. Delivery is quoted with your "
-            "order, based on the location and the quantity of materials."
+            "We can deliver pizza oven materials and roof cyclones to your site. Delivery is "
+            "quoted with your order, based on the location and the quantity of materials."
         ),
         "includes": (
             "Delivery of ordered materials to your site\n"
@@ -471,3 +471,17 @@ for _service in PIZZA_SERVICES:
     _service.update(SERVICE_SEO.get(_service["slug"], {}))
 for _category in PIZZA_CATEGORIES:
     _category.update(CATEGORY_SEO.get(_category["slug"], {}))
+
+
+# Roof cyclones: selling and repair (see catalog/seed_cyclones.py).
+from .seed_cyclones import (  # noqa: E402
+    CYCLONE_APPLICATION,
+    CYCLONE_CATEGORY,
+    CYCLONE_PRODUCT_OVERRIDE,
+    CYCLONE_SERVICE,
+)
+
+PIZZA_CATEGORIES.append(CYCLONE_CATEGORY)
+PIZZA_APPLICATIONS.append(CYCLONE_APPLICATION)
+PIZZA_PRODUCT_OVERRIDES["roof-ventilators-roof-cyclones"] = CYCLONE_PRODUCT_OVERRIDE
+PIZZA_SERVICES.append(CYCLONE_SERVICE)
