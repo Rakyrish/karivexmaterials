@@ -51,3 +51,19 @@ Bug found and fixed: Next's data cache kept serving a previously cached 200 for 
 the API started returning 404 (hidden), until on-demand revalidation ran. Single-record lookups
 (product, category, application, service, redirect) are now fetched uncached; list data stays
 cached and tag-revalidated.
+
+## Header fix, animated hero and roof cyclones, 6 October 2026 (afternoon)
+
+| Check | Result |
+| --- | --- |
+| Header: brand-name text extent vs nav/basket measured at 13 widths (360–2560 px), plus scrolled state | No overlap at any width (an earlier fix had let the name overflow from 1536 px; corrected) |
+| Backend `manage.py test` (44 tests, incl. 6 services, cyclone product published, cyclone search synonyms) | Pass |
+| `npm run lint`, `next build` | Pass |
+| `scripts/smoke_check.py`: 11 product pages, 6 service pages, guides, sitemap (39 URLs) | Pass |
+| `scripts/e2e_check.py` and headless-browser quote + service-request flow | Pass |
+| Structured data on the cyclone product (Product + FAQPage + BreadcrumbList), installation/repair services (Service + FAQPage), cyclone guide (Article + FAQPage) | Present and valid JSON |
+| Hero: frames at 0.5 s / 2 s / 8 s on desktop and 390 px mobile, plus a reduced-motion render | Inspected; no horizontal scroll; static fallback clean |
+
+Operational note: if `seed_catalog --update` runs while the Next.js server is down, its refresh signal is
+lost and list data (e.g. the sitemap) can stay stale for up to 5 minutes. To force a refresh, POST
+`{"tags":["catalog","settings"]}` to `/api/revalidate` with the `X-Revalidate-Secret` header.

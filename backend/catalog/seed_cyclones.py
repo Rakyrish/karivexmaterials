@@ -76,6 +76,7 @@ CYCLONE_PRODUCT_OVERRIDE = {
         "Number of cyclones\n"
         "Supply only, or supply and installation"
     ),
+    "sales_unit": "cyclone",
     "status": "published",
     "review_notes": (
         "Owner confirmed 2026-10-06: 600 mm stainless steel cyclones stocked; supply, "
