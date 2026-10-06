@@ -9,6 +9,8 @@ backend/__pycache__/
 backend/db.sqlite3
 backend/staticfiles/
 backend/media/
+.local-mail/
+*.log
 
 # Node / Next.js
 frontend/node_modules/
@@ -20,3 +22,8 @@ frontend/out/
 *.swp
 
 # Logo working copies are tracked on purpose (assets/, logo.png, frontend/public derivatives)
+
+# Production env and local run logs
+.env.production
+.local-*.log
+backups/
