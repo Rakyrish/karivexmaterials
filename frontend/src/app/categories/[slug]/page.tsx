@@ -86,7 +86,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps<"
                 <div className="relative aspect-[4/3]">
                   <Image src={img.src} alt={img.alt} fill placeholder="blur" sizes="18rem" className="object-cover" />
                 </div>
-                <figcaption className="px-3 py-2 text-xs text-slate">Illustrative photo</figcaption>
+                {img.badge && <figcaption className="px-3 py-2 text-xs text-slate">{img.badge}</figcaption>}
               </figure>
             ) : null;
           })()}

@@ -74,7 +74,14 @@ function productJsonLd(product: ProductDetail) {
     url: absoluteUrl(`/products/${product.slug}`),
     category: product.primary_category.name,
   };
-  if (product.images.length) data.image = product.images.map((i) => absoluteUrl(i.image));
+  if (product.images.length) {
+    data.image = product.images.map((i) => absoluteUrl(i.image));
+  } else {
+    // Owner-supplied product photos (no badge) may represent the product;
+    // stock "illustrative" photos are never put in Product markup.
+    const own = productFallbackImage(product.slug, product.primary_category.slug);
+    if (own && own.badge === null) data.image = [absoluteUrl(own.src.src)];
+  }
   if (product.brand) data.brand = { "@type": "Brand", name: product.brand };
   if (product.sku) data.sku = product.sku;
   if (product.offer) {

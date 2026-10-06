@@ -98,7 +98,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
               </ContactLink>
             )}
           </div>
-          {!service.image && stock && <p className="mt-6 text-xs text-white/60">Background: illustrative photo.</p>}
+          {!service.image && stock?.badge && <p className="mt-6 text-xs text-white/60">Background: {stock.badge.toLowerCase()}.</p>}
         </Container>
       </section>
 

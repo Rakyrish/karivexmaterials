@@ -86,6 +86,7 @@ function Ref({ href, children }: { href: string; children: React.ReactNode }) {
 
 export default function PizzaOvenGuidePage() {
   const hero = IMAGES["oven-fire-floor"];
+  const design = IMAGES["pizza-oven-design-mosaic"];
   const pizza = IMAGES["margherita-pizza"];
   return (
     <>
@@ -184,6 +185,12 @@ export default function PizzaOvenGuidePage() {
         </article>
 
         <aside className="space-y-6">
+          <figure className="overflow-hidden rounded-2xl border border-line">
+            <Image src={design.src} alt={design.alt} placeholder="blur" sizes="(min-width:1024px) 33vw, 100vw" className="h-auto w-full" />
+            <figcaption className="p-3 text-xs text-slate">
+              A finished oven: tiled dome over the insulation, chimney, and a stand with log storage (example design).
+            </figcaption>
+          </figure>
           <figure className="overflow-hidden rounded-2xl border border-line">
             <Image src={hero.src} alt={hero.alt} placeholder="blur" sizes="(min-width:1024px) 33vw, 100vw" className="h-auto w-full" />
             <figcaption className="p-3 text-xs text-slate">Fire on the floor of a brick dome oven (illustrative).</figcaption>

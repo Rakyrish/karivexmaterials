@@ -88,7 +88,7 @@ export function ArticleLayout({
             <div className="relative aspect-[4/3]">
               <Image src={image.src} alt={image.alt} fill preload placeholder="blur" sizes="(min-width:1024px) 40vw, 100vw" className="object-cover" />
             </div>
-            <figcaption className="bg-white px-3 py-2 text-xs text-slate">Illustrative photo</figcaption>
+            {image.badge && <figcaption className="bg-white px-3 py-2 text-xs text-slate">{image.badge}</figcaption>}
           </figure>
         </Container>
       </div>

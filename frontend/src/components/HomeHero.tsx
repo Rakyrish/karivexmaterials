@@ -83,7 +83,7 @@ export function HomeHero({
   const slides = [
     IMAGES["wood-fired-oven-pizzas"],
     IMAGES["cyclone-on-corrugated-roof"],
-    IMAGES["pizza-peel-oven"],
+    IMAGES["pizza-oven-design-amber-tiles"],
     IMAGES["steel-roof-cyclone"],
   ];
   const cyclone = IMAGES["cyclone-on-corrugated-roof"];
