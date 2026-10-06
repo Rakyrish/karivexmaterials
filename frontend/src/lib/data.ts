@@ -3,7 +3,7 @@ import "server-only";
 import { unstable_rethrow } from "next/navigation";
 import { cache } from "react";
 
-import { getCategories, getSiteSettings } from "./api";
+import { getCategories, getServices, getSiteSettings } from "./api";
 import { FALLBACK_SETTINGS } from "./fallback";
 
 /** Site settings for layout/metadata; falls back to verified contacts if
@@ -24,6 +24,16 @@ export const loadCategories = cache(async () => {
   } catch (error) {
     unstable_rethrow(error);
     console.error("Categories unavailable:", error);
+    return [];
+  }
+});
+
+export const loadServices = cache(async () => {
+  try {
+    return await getServices();
+  } catch (error) {
+    unstable_rethrow(error);
+    console.error("Services unavailable:", error);
     return [];
   }
 });

@@ -2,12 +2,13 @@ import type { Metadata, Viewport } from "next";
 import { Barlow, Inter } from "next/font/google";
 
 import { Analytics } from "@/components/Analytics";
+import { FloatingContact } from "@/components/FloatingContact";
 import { JsonLd } from "@/components/JsonLd";
 import { QuoteBasketProvider } from "@/components/QuoteBasket";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { NOINDEX_ALL, SITE_ORIGIN } from "@/lib/config";
-import { loadCategories, loadSettings } from "@/lib/data";
+import { loadCategories, loadServices, loadSettings } from "@/lib/data";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 
 import "./globals.css";
@@ -23,7 +24,7 @@ const barlow = Barlow({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_ORIGIN),
   title: {
-    default: "KariVex Industrial Materials | Insulation, Refractory & Packaging Supplies",
+    default: "KariVex Industrial Materials | Pizza Oven Materials, Building & Repair",
     template: "%s | KariVex Industrial Materials",
   },
   applicationName: "KariVex Industrial Materials",
@@ -38,7 +39,7 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const [settings, categories] = await Promise.all([loadSettings(), loadCategories()]);
+  const [settings, categories, services] = await Promise.all([loadSettings(), loadCategories(), loadServices()]);
   return (
     <html lang="en-KE" className={`${inter.variable} ${barlow.variable}`}>
       <body className="flex min-h-screen flex-col antialiased">
@@ -50,9 +51,10 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           <main id="main" className="flex-1" tabIndex={-1}>
             {children}
           </main>
-          <SiteFooter settings={settings} categories={categories} />
+          <SiteFooter settings={settings} categories={categories} services={services} />
         </QuoteBasketProvider>
-        <JsonLd data={organizationJsonLd(settings)} />
+        <FloatingContact settings={settings} />
+        <JsonLd data={organizationJsonLd(settings, services)} />
         <JsonLd data={websiteJsonLd(settings)} />
         <Analytics measurementId={settings.ga_measurement_id} />
       </body>

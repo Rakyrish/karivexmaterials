@@ -1,3 +1,5 @@
+import re
+
 from django.db.models import Q
 from rest_framework import serializers
 
@@ -10,6 +12,7 @@ from .models import (
     ProductSpecification,
     ProductVariant,
     PublishStatus,
+    Service,
 )
 
 
@@ -24,6 +27,24 @@ def published_product_count(queryset_filter):
 
 def lines(text):
     return [line.strip(" -•\t") for line in (text or "").splitlines() if line.strip(" -•\t")]
+
+
+def faq_list(text):
+    """Parse 'Q: ...' / 'A: ...' blocks separated by blank lines."""
+    items = []
+    for block in re.split(r"\n\s*\n", (text or "").strip()):
+        question, answer, target = [], [], None
+        for line in block.splitlines():
+            stripped = line.strip()
+            if stripped[:2].upper() == "Q:":
+                target, stripped = question, stripped[2:].strip()
+            elif stripped[:2].upper() == "A:":
+                target, stripped = answer, stripped[2:].strip()
+            if target is not None and stripped:
+                target.append(stripped)
+        if question and answer:
+            items.append({"question": " ".join(question), "answer": " ".join(answer)})
+    return items
 
 
 def file_url(field_file):
@@ -164,6 +185,9 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     related_products = serializers.SerializerMethodField()
     selection_notes = serializers.SerializerMethodField()
     synonyms = serializers.SerializerMethodField()
+    services = serializers.SerializerMethodField()
+    faqs = serializers.SerializerMethodField()
+    offer = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -172,8 +196,25 @@ class ProductDetailSerializer(serializers.ModelSerializer):
             "selection_notes", "primary_category", "additional_categories", "applications",
             "sales_unit", "minimum_order_quantity", "moq_unit", "availability_status",
             "specifications", "variants", "images", "documents", "related_products",
-            "seo_title", "seo_description", "updated_at",
+            "services", "faqs", "offer", "seo_title", "seo_description", "updated_at",
         ]
+
+    def get_faqs(self, obj):
+        return faq_list(obj.faqs)
+
+    def get_offer(self, obj):
+        if obj.price is None:
+            return None
+        return {
+            "price": f"{obj.price:.2f}",
+            "currency": obj.price_currency or "KES",
+            "unit": obj.price_unit,
+            "valid_until": obj.price_valid_until.isoformat() if obj.price_valid_until else None,
+        }
+
+    def get_services(self, obj):
+        services = [s for s in obj.services.all() if s.status == PublishStatus.PUBLISHED]
+        return [{"name": s.name, "slug": s.slug, "summary": s.summary} for s in services]
 
     def get_additional_categories(self, obj):
         cats = [c for c in obj.additional_categories.all() if c.status == PublishStatus.PUBLISHED]
@@ -208,3 +249,40 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 
     def get_synonyms(self, obj):
         return [s.strip() for s in obj.synonyms.split(",") if s.strip()]
+
+
+class ServiceRefSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = ["name", "slug", "summary"]
+
+
+class ServiceSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+    includes = serializers.SerializerMethodField()
+    request_checklist = serializers.SerializerMethodField()
+    related_products = serializers.SerializerMethodField()
+    faqs = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Service
+        fields = [
+            "id", "name", "slug", "summary", "description", "includes", "request_checklist", "faqs",
+            "related_products", "image", "image_alt", "seo_title", "seo_description", "updated_at",
+        ]
+
+    def get_image(self, obj):
+        return file_url(obj.image)
+
+    def get_includes(self, obj):
+        return lines(obj.includes)
+
+    def get_request_checklist(self, obj):
+        return lines(obj.request_checklist)
+
+    def get_faqs(self, obj):
+        return faq_list(obj.faqs)
+
+    def get_related_products(self, obj):
+        products = [p for p in obj.related_products.all() if p.status == PublishStatus.PUBLISHED]
+        return ProductCardSerializer(products, many=True).data

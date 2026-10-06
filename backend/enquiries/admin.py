@@ -36,7 +36,7 @@ class NotificationFilter(admin.SimpleListFilter):
 @admin.register(Enquiry)
 class EnquiryAdmin(admin.ModelAdmin):
     list_display = (
-        "reference_number", "kind", "name", "company", "item_count", "status",
+        "reference_number", "kind", "service_name_snapshot", "name", "company", "item_count", "status",
         "notification_sent", "created_at",
     )
     list_filter = ("status", "kind", NotificationFilter, "created_at")
@@ -45,12 +45,14 @@ class EnquiryAdmin(admin.ModelAdmin):
     )
     date_hierarchy = "created_at"
     readonly_fields = (
-        "reference_number", "kind", "idempotency_key", "name", "company", "email", "phone",
+        "reference_number", "kind", "service_name_snapshot", "idempotency_key", "name", "company", "email", "phone",
         "delivery_location", "project_notes", "notification_sent", "notification_error",
         "notification_attempted_at", "created_at", "updated_at",
     )
     fieldsets = (
-        ("Reference", {"fields": ("reference_number", "kind", "status", "internal_notes")}),
+        ("Reference", {
+            "fields": ("reference_number", "kind", "service_name_snapshot", "status", "internal_notes"),
+        }),
         ("Contact", {"fields": ("name", "company", "email", "phone", "delivery_location")}),
         ("Request", {"fields": ("project_notes",)}),
         ("Notification", {

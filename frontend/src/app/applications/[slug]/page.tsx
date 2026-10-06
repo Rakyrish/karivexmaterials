@@ -16,7 +16,7 @@ export async function generateMetadata({ params, searchParams }: PageProps<"/app
   if (!application) return { title: "Application not found", robots: { index: false } };
   const path = `/applications/${application.slug}`;
   return pageMetadata({
-    title: application.seo_title || `Materials for ${application.name}`,
+    title: application.seo_title || `${application.name} — Pizza Oven Materials`,
     description: application.seo_description || application.intro,
     path,
     canonicalPath: page > 1 ? `${path}?page=${page}` : path,
@@ -35,12 +35,12 @@ export default async function ApplicationPage({ params, searchParams }: PageProp
   return (
     <>
       <PageHero
-        eyebrow="Application"
-        title={`Materials for ${application.name}`}
+        eyebrow="Oven project"
+        title={application.name}
         breadcrumbs={
           <Breadcrumbs
             items={[
-              { name: "Applications", href: "/applications" },
+              { name: "Oven projects", href: "/applications" },
               { name: application.name, href: path },
             ]}
           />
@@ -75,9 +75,14 @@ export default async function ApplicationPage({ params, searchParams }: PageProp
             <p className="mt-4 text-sm text-slate">
               Share these details in your quotation request so we can match the right materials.
             </p>
-            <Link href="/quote" className="mt-4 inline-flex min-h-11 items-center rounded-md bg-orange px-4 font-semibold text-navy hover:bg-orange-600">
-              Request a quote
-            </Link>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Link href="/quote" className="inline-flex min-h-11 items-center rounded-md bg-orange px-4 font-semibold text-navy hover:bg-orange-600">
+                Request a quote
+              </Link>
+              <Link href="/services" className="inline-flex min-h-11 items-center rounded-md border border-navy px-4 font-semibold text-navy hover:bg-white">
+                Our services
+              </Link>
+            </div>
           </aside>
         )}
       </Container>

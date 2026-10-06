@@ -11,7 +11,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata = pageMetadata({
   title: "Request a Quotation",
   description:
-    "Send one quotation request for all the industrial materials in your basket, with quantities, specifications and delivery location.",
+    "Send one quotation request for all the pizza oven materials in your basket, with quantities and delivery location.",
   path: "/quote",
   // The basket is personal and empty for crawlers — keep it out of search.
   index: false,

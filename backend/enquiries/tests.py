@@ -6,7 +6,7 @@ from django.core.cache import cache
 from django.core.management import call_command
 from django.test import TestCase, override_settings
 
-from catalog.models import Product
+from catalog.models import Product, ProductVariant
 
 from .models import Enquiry
 
@@ -14,7 +14,7 @@ URL = "/api/v1/enquiries/"
 
 
 def payload(**overrides):
-    product = Product.objects.get(slug="eps-boxes")
+    product = Product.objects.get(slug="fire-bricks-refractory-bricks")
     data = {
         "name": "Test Buyer",
         "company": "",
@@ -24,9 +24,10 @@ def payload(**overrides):
         "project_notes": "Monthly order",
         "idempotency_key": "test-key-0001",
         "items": [
-            {"product_slug": "eps-boxes", "variant_id": product.variants.get(label="Fish box").id,
-             "quantity": "200", "unit": "boxes"},
-            {"product_slug": "copper-pipe-rolls", "quantity": "2.5", "notes": "1/4 inch"},
+            {"product_slug": "fire-bricks-refractory-bricks",
+             "variant_id": product.variants.get(label="Test brick size").id,
+             "quantity": "200", "unit": "bricks"},
+            {"product_slug": "vermiculite", "quantity": "2.5", "notes": "for hearth"},
         ],
     }
     data.update(overrides)
@@ -41,6 +42,10 @@ class EnquiryTests(TestCase):
 
     def setUp(self):
         cache.clear()
+        # Pizza products have no confirmed variants yet; add one for these tests.
+        ProductVariant.objects.get_or_create(
+            product=Product.objects.get(slug="fire-bricks-refractory-bricks"), label="Test brick size"
+        )
 
     def post(self, data):
         return self.client.post(URL, data, content_type="application/json")
@@ -55,15 +60,18 @@ class EnquiryTests(TestCase):
         enquiry = Enquiry.objects.get(reference_number=body["reference_number"])
         items = list(enquiry.items.all())
         self.assertEqual(len(items), 2)
-        self.assertEqual(items[0].product_name_snapshot, "EPS Boxes (Polystyrene Boxes)")
-        self.assertEqual(items[0].variant_label_snapshot, "Fish box")
-        self.assertEqual(items[0].product_url_snapshot, "https://materials.karivexsolutionsltd.com/products/eps-boxes")
+        self.assertEqual(items[0].product_name_snapshot, "Fire Bricks for Pizza Ovens")
+        self.assertEqual(items[0].variant_label_snapshot, "Test brick size")
+        self.assertEqual(
+            items[0].product_url_snapshot,
+            "https://materials.karivexsolutionsltd.com/products/fire-bricks-refractory-bricks",
+        )
         self.assertEqual(str(items[1].quantity), "2.50")
 
         # Later catalogue edits do not change the historical request.
-        Product.objects.filter(slug="eps-boxes").update(name="Renamed")
+        Product.objects.filter(slug="fire-bricks-refractory-bricks").update(name="Renamed")
         items[0].refresh_from_db()
-        self.assertEqual(items[0].product_name_snapshot, "EPS Boxes (Polystyrene Boxes)")
+        self.assertEqual(items[0].product_name_snapshot, "Fire Bricks for Pizza Ovens")
 
         self.assertTrue(enquiry.notification_sent)
         self.assertEqual(len(mail.outbox), 1)
@@ -98,11 +106,15 @@ class EnquiryTests(TestCase):
         self.assertEqual(self.post(payload(items=[])).status_code, 400)
         response = self.post(payload(items=[{"product_slug": "max-50", "quantity": 1}]))
         self.assertEqual(response.status_code, 400)
+        hidden = self.post(payload(idempotency_key="", items=[{"product_slug": "eps-boxes", "quantity": 1}]))
+        self.assertEqual(hidden.status_code, 400)
         self.assertEqual(Enquiry.objects.count(), 0)
 
     def test_variant_must_belong_to_product(self):
         other = Product.objects.get(slug="copper-pipe-rolls").variants.first()
-        response = self.post(payload(items=[{"product_slug": "eps-boxes", "variant_id": other.id}]))
+        response = self.post(
+            payload(items=[{"product_slug": "fire-bricks-refractory-bricks", "variant_id": other.id}])
+        )
         self.assertEqual(response.status_code, 400)
 
     def test_contact_enquiry_without_items(self):
@@ -112,6 +124,24 @@ class EnquiryTests(TestCase):
         })
         self.assertEqual(response.status_code, 201, response.content)
         self.assertEqual(Enquiry.objects.get().kind, "contact")
+
+    def test_service_request(self):
+        response = self.post({
+            "kind": "service", "service_slug": "pizza-oven-building", "name": "Pizzeria Owner",
+            "email": "owner@example.com", "delivery_location": "Nairobi",
+            "project_notes": "Oven for about 8 pizzas at once",
+        })
+        self.assertEqual(response.status_code, 201, response.content)
+        enquiry = Enquiry.objects.get()
+        self.assertEqual(enquiry.kind, "service")
+        self.assertEqual(enquiry.service_name_snapshot, "Pizza Oven Building")
+        self.assertIn("Service: Pizza Oven Building", mail.outbox[0].body)
+        self.assertEqual(response.json()["service_name_snapshot"], "Pizza Oven Building")
+
+    def test_service_request_requires_valid_service(self):
+        response = self.post({"kind": "service", "service_slug": "nope", "name": "A", "email": "a@example.com"})
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("service_slug", response.json())
 
     def test_honeypot_rejects_without_saving(self):
         response = self.post(payload(website="http://spam.example"))

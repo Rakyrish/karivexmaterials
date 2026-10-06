@@ -4,12 +4,20 @@ import Link from "next/link";
 import logo from "../../public/brand/karivex-logo.png";
 import { generalWhatsAppMessage, mailtoHref, whatsappHref } from "@/lib/contact";
 import { SITE_ORIGIN } from "@/lib/config";
-import type { Category, SiteSettings } from "@/lib/types";
+import type { Category, ServiceRef, SiteSettings } from "@/lib/types";
 
 import { ContactLink } from "./ContactLink";
 import { ClockIcon, ExternalIcon, MailIcon, PhoneIcon, PinIcon, WhatsAppIcon } from "./Icons";
 
-export function SiteFooter({ settings, categories }: { settings: SiteSettings; categories: Category[] }) {
+export function SiteFooter({
+  settings,
+  categories,
+  services,
+}: {
+  settings: SiteSettings;
+  categories: Category[];
+  services: ServiceRef[];
+}) {
   const wa = whatsappHref(settings, generalWhatsAppMessage(SITE_ORIGIN));
   const year = new Date().getFullYear();
   return (
@@ -25,13 +33,23 @@ export function SiteFooter({ settings, categories }: { settings: SiteSettings; c
           </p>
         </div>
 
-        <nav aria-label="Product categories">
-          <h2 className="font-display text-base font-bold uppercase tracking-wider text-orange">Categories</h2>
+        <nav aria-label="Materials and services">
+          <h2 className="font-display text-base font-bold uppercase tracking-wider text-orange">Oven materials</h2>
           <ul className="mt-4 space-y-2 text-sm">
             {categories.map((category) => (
               <li key={category.slug}>
                 <Link href={`/categories/${category.slug}`} className="text-white/85 hover:text-white hover:underline">
                   {category.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <h2 className="mt-6 font-display text-base font-bold uppercase tracking-wider text-orange">Services</h2>
+          <ul className="mt-4 space-y-2 text-sm">
+            {services.map((service) => (
+              <li key={service.slug}>
+                <Link href={`/services/${service.slug}`} className="text-white/85 hover:text-white hover:underline">
+                  {service.name}
                 </Link>
               </li>
             ))}
@@ -42,12 +60,14 @@ export function SiteFooter({ settings, categories }: { settings: SiteSettings; c
           <h2 className="font-display text-base font-bold uppercase tracking-wider text-orange">Company</h2>
           <ul className="mt-4 space-y-2 text-sm">
             {[
-              ["/products", "All products"],
-              ["/applications", "Applications"],
+              ["/products", "All oven materials"],
+              ["/pizza-oven-guide", "Pizza oven guide"],
+              ["/applications", "Oven projects"],
               ["/quote", "Request a quote"],
               ["/about", "About the division"],
               ["/contact", "Contact"],
               ["/privacy", "Privacy notice"],
+              ["/image-credits", "Image credits"],
             ].map(([href, label]) => (
               <li key={href}>
                 <Link href={href} className="text-white/85 hover:text-white hover:underline">

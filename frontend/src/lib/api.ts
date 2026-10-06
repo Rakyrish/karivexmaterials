@@ -10,6 +10,7 @@ import type {
   ProductCard,
   ProductDetail,
   ProductFilters,
+  Service,
   SiteSettings,
   SitemapData,
 } from "./types";
@@ -29,13 +30,16 @@ export class ApiError extends Error {
   }
 }
 
-async function apiGet<T>(path: string, tags: string[]): Promise<T | null> {
-  // Pages using catalogue data render per request (never at build time),
-  // while the fetch results themselves are cached and tag-revalidated.
+async function apiGet<T>(path: string, tags: string[], { cached = true } = {}): Promise<T | null> {
+  // Pages using catalogue data render per request (never at build time).
+  // List data is cached and tag-revalidated. Single-record lookups that can
+  // return 404 (unpublished/hidden items) are never cached: Next's data cache
+  // keeps a previously cached 200 when a later response is a 404, which would
+  // leave hidden items visible.
   await connection();
   const response = await fetch(`${API_BASE_URL}/api/v1${path}`, {
     headers: { Accept: "application/json" },
-    next: { revalidate: REVALIDATE_SECONDS, tags },
+    ...(cached ? { next: { revalidate: REVALIDATE_SECONDS, tags } } : { cache: "no-store" as const }),
   });
   if (response.status === 404) return null;
   if (!response.ok) {
@@ -64,7 +68,7 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 export function getCategory(slug: string) {
-  return apiGet<Category>(`/categories/${encodeURIComponent(slug)}/`, ["catalog"]);
+  return apiGet<Category>(`/categories/${encodeURIComponent(slug)}/`, ["catalog"], { cached: false });
 }
 
 export async function getApplications(): Promise<Application[]> {
@@ -72,7 +76,7 @@ export async function getApplications(): Promise<Application[]> {
 }
 
 export function getApplication(slug: string) {
-  return apiGet<Application>(`/applications/${encodeURIComponent(slug)}/`, ["catalog"]);
+  return apiGet<Application>(`/applications/${encodeURIComponent(slug)}/`, ["catalog"], { cached: false });
 }
 
 export async function getProducts(filters: ProductFilters = {}): Promise<Paginated<ProductCard>> {
@@ -85,7 +89,7 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Paginat
 }
 
 export function getProduct(slug: string) {
-  return apiGet<ProductDetail>(`/products/${encodeURIComponent(slug)}/`, ["catalog"]);
+  return apiGet<ProductDetail>(`/products/${encodeURIComponent(slug)}/`, ["catalog"], { cached: false });
 }
 
 export async function getFacets(scope: { category?: string; application?: string }): Promise<Facets> {
@@ -101,11 +105,19 @@ export async function getFacets(scope: { category?: string; application?: string
 
 export async function getSitemapData(): Promise<SitemapData> {
   const data = await apiGet<SitemapData>("/sitemap/", ["catalog"]);
-  return data ?? { latest_product_update: null, products: [], categories: [], applications: [] };
+  return data ?? { latest_product_update: null, services: [], products: [], categories: [], applications: [] };
+}
+
+export async function getServices(): Promise<Service[]> {
+  return (await apiGet<Service[]>("/services/", ["catalog"])) ?? [];
+}
+
+export function getService(slug: string) {
+  return apiGet<Service>(`/services/${encodeURIComponent(slug)}/`, ["catalog"], { cached: false });
 }
 
 export async function getRedirect(path: string): Promise<string | null> {
-  const data = await apiGet<{ new_path: string }>(`/redirects/${query({ path })}`, ["catalog"]);
+  const data = await apiGet<{ new_path: string }>(`/redirects/${query({ path })}`, ["catalog"], { cached: false });
   return data?.new_path ?? null;
 }
 

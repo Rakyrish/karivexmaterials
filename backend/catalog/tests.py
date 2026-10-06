@@ -8,7 +8,7 @@ from django.core.management import call_command
 from django.test import TestCase, override_settings
 from PIL import Image
 
-from .models import Category, Product, ProductImage, PublishStatus, Redirect
+from .models import Category, Product, ProductImage, PublishStatus, Redirect, Service
 from .seed_data import PRODUCTS
 
 
@@ -53,10 +53,23 @@ class SeedTests(SeededCatalogTestCase):
         self.assertEqual(len(slugs), len(set(slugs)))
         self.assertEqual(Product.objects.filter(slug__in=slugs).count(), len(slugs))
 
-    def test_unverified_identities_stay_draft(self):
+    def test_unverified_identities_are_not_published(self):
         for slug in ["fondu-cement", "max-50", "maxheat-k", "maxheat-a",
                      "pharmaceutical-cold-chain-boxes", "polystyrene-insulation-sheets"]:
-            self.assertEqual(Product.objects.get(slug=slug).status, PublishStatus.DRAFT, slug)
+            self.assertNotEqual(Product.objects.get(slug=slug).status, PublishStatus.PUBLISHED, slug)
+        self.assertEqual(Product.objects.get(slug="fondu-cement").status, PublishStatus.DRAFT)
+
+    def test_pizza_focus_hides_but_keeps_other_products(self):
+        published = set(Product.objects.filter(status="published").values_list("slug", flat=True))
+        self.assertIn("fire-bricks-refractory-bricks", published)
+        self.assertIn("ceramic-fibre-rope", published)
+        self.assertNotIn("eps-boxes", published)
+        self.assertEqual(Product.objects.get(slug="eps-boxes").status, PublishStatus.ARCHIVED)
+        self.assertEqual(
+            set(Category.objects.filter(status="published").values_list("short_code", flat=True)),
+            {"OF", "OD", "OI", "OS"},
+        )
+        self.assertEqual(Service.objects.filter(status="published").count(), 4)
 
 
 class PublicApiTests(SeededCatalogTestCase):
@@ -70,6 +83,7 @@ class PublicApiTests(SeededCatalogTestCase):
 
     def test_draft_and_unknown_products_are_404(self):
         self.assertEqual(self.client.get("/api/v1/products/max-50/").status_code, 404)
+        self.assertEqual(self.client.get("/api/v1/products/eps-boxes/").status_code, 404)  # hidden
         self.assertEqual(self.client.get("/api/v1/products/does-not-exist/").status_code, 404)
 
     def test_list_contains_only_published(self):
@@ -82,23 +96,23 @@ class PublicApiTests(SeededCatalogTestCase):
     def test_search_handles_fibre_fiber_and_fiberglass(self):
         for query, expected in [
             ("ceramic fiber", "ceramic-fibre-blanket"),
-            ("fiberglass", "fibreglass-insulation"),
-            ("glass wool", "fibreglass-insulation"),
-            ("aluminum tape", "aluminium-tape"),
-            ("styrofoam box", "eps-boxes"),
+            ("ceramic fiber rope", "ceramic-fibre-rope"),
             ("fireproof cement", "refractory-cement"),
-            ("roof cyclone", "roof-ventilators-roof-cyclones"),
+            ("firebrick", "fire-bricks-refractory-bricks"),
+            ("oven door seal", "ceramic-fibre-rope"),
+            ("pizza oven floor", "hearth-materials"),
         ]:
             response = self.client.get("/api/v1/products/", {"q": query})
             slugs = [p["slug"] for p in response.json()["results"]]
             self.assertIn(expected, slugs, query)
 
     def test_category_filter_includes_additional_categories(self):
-        response = self.client.get("/api/v1/products/", {"category": "refrigeration-hvac-materials"})
+        response = self.client.get("/api/v1/products/", {"category": "oven-floor-hearth"})
         slugs = {p["slug"] for p in response.json()["results"]}
-        self.assertIn("copper-pipe-rolls", slugs)
-        self.assertIn("thermal-insulation-tape", slugs)  # primary F, additional E
-        category = self.client.get("/api/v1/categories/refrigeration-hvac-materials/").json()
+        self.assertIn("hearth-materials", slugs)
+        self.assertIn("vermiculite", slugs)  # primary OI, additional OF
+        self.assertEqual(self.client.get("/api/v1/categories/refrigeration-hvac-materials/").status_code, 404)
+        category = self.client.get("/api/v1/categories/oven-floor-hearth/").json()
         self.assertEqual(category["product_count"], len(slugs))
 
     def test_sitemap_lists_only_published(self):
@@ -111,10 +125,62 @@ class PublicApiTests(SeededCatalogTestCase):
         self.assertIn("noindex", response.headers.get("X-Robots-Tag", ""))
 
     def test_facets_only_return_real_values(self):
-        data = self.client.get("/api/v1/products/facets/", {"category": "eps-packaging-cold-chain-boxes"}).json()
+        data = self.client.get("/api/v1/products/facets/", {"category": "pizza-oven-insulation"}).json()
         self.assertGreater(data["product_count"], 0)
         for facet in data["facets"]:
             self.assertGreaterEqual(len(facet["values"]), 2)
+
+
+class SeoContentTests(SeededCatalogTestCase):
+    def test_faqs_parsed_and_offer_hidden_without_price(self):
+        data = self.client.get("/api/v1/products/fire-bricks-refractory-bricks/").json()
+        self.assertGreaterEqual(len(data["faqs"]), 3)
+        self.assertTrue(all(f["question"] and f["answer"] for f in data["faqs"]))
+        self.assertIsNone(data["offer"])
+        self.assertIn("Pizza Ovens", data["seo_title"])
+
+    def test_offer_published_only_with_confirmed_price(self):
+        import datetime
+        from decimal import Decimal
+
+        Product.objects.filter(slug="perlite").update(
+            price=Decimal("1500"), price_unit="per bag", price_valid_until=datetime.date(2026, 12, 31)
+        )
+        offer = self.client.get("/api/v1/products/perlite/").json()["offer"]
+        self.assertEqual(offer, {"price": "1500.00", "currency": "KES", "unit": "per bag", "valid_until": "2026-12-31"})
+
+    def test_faq_parser(self):
+        from .serializers import faq_list
+
+        text = "Q: First?\nA: One.\n\nQ: Second?\nA: Two\ncontinued.\n\nQ: No answer?"
+        self.assertEqual(faq_list(text), [
+            {"question": "First?", "answer": "One."},
+            {"question": "Second?", "answer": "Two continued."},
+        ])
+
+
+class ServiceApiTests(SeededCatalogTestCase):
+    def test_services_list_and_detail(self):
+        services = self.client.get("/api/v1/services/").json()
+        self.assertEqual(
+            [s["slug"] for s in services],
+            ["pizza-oven-building", "pizza-oven-repair-relining", "pizza-oven-material-advice",
+             "delivery-of-materials"],
+        )
+        detail = self.client.get("/api/v1/services/pizza-oven-building/").json()
+        self.assertTrue(detail["includes"])
+        self.assertNotIn("review_notes", detail)
+        self.assertIn("fire-bricks-refractory-bricks", {p["slug"] for p in detail["related_products"]})
+
+    def test_draft_service_hidden(self):
+        Service.objects.filter(slug="delivery-of-materials").update(status="draft")
+        self.assertEqual(self.client.get("/api/v1/services/delivery-of-materials/").status_code, 404)
+        slugs = {s["slug"] for s in self.client.get("/api/v1/sitemap/").json()["services"]}
+        self.assertNotIn("delivery-of-materials", slugs)
+
+    def test_product_lists_its_services(self):
+        data = self.client.get("/api/v1/products/ceramic-fibre-rope/").json()
+        self.assertIn("pizza-oven-repair-relining", {s["slug"] for s in data["services"]})
 
 
 class RedirectTests(SeededCatalogTestCase):
@@ -150,7 +216,7 @@ class AdminPermissionTests(SeededCatalogTestCase):
 
     def test_editor_cannot_publish_or_view_enquiries(self):
         self.client.force_login(self.editor)
-        product = Product.objects.get(slug="max-50")
+        product = Product.objects.get(slug="fondu-cement")
         page = self.client.get(f"/admin/catalog/product/{product.pk}/change/")
         self.assertEqual(page.status_code, 200)
         self.assertNotContains(page, 'name="status"')
@@ -164,13 +230,13 @@ class AdminPermissionTests(SeededCatalogTestCase):
 
     def test_administrator_can_publish(self):
         self.client.force_login(self.admin_user)
-        product = Product.objects.get(slug="max-50")
+        product = Product.objects.get(slug="fondu-cement")
         self.client.post("/admin/catalog/product/", {
             "action": "make_published", "_selected_action": [product.pk],
         })
         product.refresh_from_db()
         self.assertEqual(product.status, PublishStatus.PUBLISHED)
-        self.assertEqual(self.client.get("/api/v1/products/max-50/").status_code, 200)
+        self.assertEqual(self.client.get("/api/v1/products/fondu-cement/").status_code, 200)
 
 
 class MediaTests(SeededCatalogTestCase):

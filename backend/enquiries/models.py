@@ -23,6 +23,7 @@ class EnquiryStatus(models.TextChoices):
 class EnquiryKind(models.TextChoices):
     QUOTE = "quote", "Quotation request"
     CONTACT = "contact", "General enquiry"
+    SERVICE = "service", "Service request"
 
 
 class Enquiry(models.Model):
@@ -37,6 +38,11 @@ class Enquiry(models.Model):
         help_text="Client-generated key preventing accidental double submission.",
     )
     kind = models.CharField(max_length=10, choices=EnquiryKind.choices, default=EnquiryKind.QUOTE)
+    service = models.ForeignKey(
+        "catalog.Service", on_delete=models.SET_NULL, null=True, blank=True, related_name="+"
+    )
+    # Snapshot so later edits to the service do not change the request.
+    service_name_snapshot = models.CharField(max_length=120, blank=True)
 
     name = models.CharField(max_length=120)
     company = models.CharField(max_length=160, blank=True)

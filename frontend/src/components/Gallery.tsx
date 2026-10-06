@@ -3,16 +3,26 @@
 import Image from "next/image";
 import { useState } from "react";
 
+import type { IllustrativeImage } from "@/lib/images";
 import type { ProductImage } from "@/lib/types";
 
 import { ProductVisual } from "./ProductVisual";
 
-export function Gallery({ images, productName }: { images: ProductImage[]; productName: string }) {
+export function Gallery({
+  images,
+  productName,
+  fallback,
+}: {
+  images: ProductImage[];
+  productName: string;
+  fallback?: IllustrativeImage;
+}) {
   const [active, setActive] = useState(0);
   if (images.length <= 1) {
     return (
       <ProductVisual
         image={images[0]}
+        fallback={fallback}
         label={productName}
         sizes="(min-width:1024px) 50vw, 100vw"
         preload

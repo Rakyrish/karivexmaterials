@@ -8,14 +8,17 @@ import { track } from "@/lib/analytics";
 import { CheckIcon } from "./Icons";
 import { useQuoteBasket } from "./QuoteBasket";
 
-type Mode = "quote" | "contact";
+type Mode = "quote" | "contact" | "service";
 
 interface Confirmation {
   reference_number: string;
+  service_name_snapshot?: string;
   items: { product_name_snapshot: string; variant_label_snapshot: string; quantity: string; unit: string }[];
 }
 
-type FieldErrors = Partial<Record<"name" | "email" | "phone" | "project_notes" | "items" | "form", string>>;
+type FieldErrors = Partial<
+  Record<"name" | "email" | "phone" | "project_notes" | "items" | "service_slug" | "form", string>
+>;
 
 function newKey() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID().replace(/-/g, "");
@@ -32,7 +35,7 @@ function flatten(value: unknown): string {
 const fieldClass =
   "mt-1 block min-h-11 w-full rounded-md border border-line bg-white px-3 py-2 text-ink focus:border-navy focus:outline-none focus-visible:outline-navy aria-[invalid=true]:border-red-700";
 
-export function EnquiryForm({ mode }: { mode: Mode }) {
+export function EnquiryForm({ mode, serviceSlug }: { mode: Mode; serviceSlug?: string }) {
   const { items, ready, update, remove, clear } = useQuoteBasket();
   const id = useId();
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -54,6 +57,11 @@ export function EnquiryForm({ mode }: { mode: Mode }) {
           <strong className="font-mono text-lg text-navy">{confirmation.reference_number}</strong>. Please quote it if
           you contact us about this request.
         </p>
+        {confirmation.service_name_snapshot && (
+          <p className="mt-2 text-ink">
+            Service requested: <strong>{confirmation.service_name_snapshot}</strong>
+          </p>
+        )}
         {confirmation.items.length > 0 && (
           <ul className="mt-4 list-disc space-y-1 pl-5 text-sm text-ink">
             {confirmation.items.map((item, index) => (
@@ -100,6 +108,7 @@ export function EnquiryForm({ mode }: { mode: Mode }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           kind: mode,
+          service_slug: mode === "service" ? serviceSlug : undefined,
           name: get("name"),
           company: get("company"),
           email: get("email"),
@@ -131,7 +140,7 @@ export function EnquiryForm({ mode }: { mode: Mode }) {
       }
       if (response.status === 400 && data && typeof data === "object") {
         const fieldErrors: FieldErrors = {};
-        for (const key of ["name", "email", "phone", "project_notes", "items"] as const) {
+        for (const key of ["name", "email", "phone", "project_notes", "items", "service_slug"] as const) {
           if (key in data) fieldErrors[key] = flatten((data as Record<string, unknown>)[key]);
         }
         if ("detail" in data || "non_field_errors" in data) {
@@ -293,13 +302,13 @@ export function EnquiryForm({ mode }: { mode: Mode }) {
             <Field
               id={`${id}-location`}
               name="delivery_location"
-              label="Delivery location"
+              label={mode === "service" ? "Oven / site location" : "Delivery location"}
               placeholder="Town / site, county or country"
             />
           </div>
           <div className="sm:col-span-2">
             <label htmlFor={`${id}-notes`} className="text-sm font-semibold text-navy">
-              {mode === "quote" ? "Project notes" : "How can we help?"}
+              {mode === "quote" ? "Project notes" : mode === "service" ? "About your oven or project" : "How can we help?"}
               {mode === "contact" && <span aria-hidden="true"> *</span>}
             </label>
             <textarea
@@ -311,8 +320,10 @@ export function EnquiryForm({ mode }: { mode: Mode }) {
               aria-invalid={errors.project_notes ? true : undefined}
               placeholder={
                 mode === "quote"
-                  ? "Specifications, drawings references, timeline, or anything else that helps us quote accurately."
-                  : "Products, specifications and quantities you are looking for."
+                  ? "Oven size, drawings, timeline, or anything else that helps us quote accurately."
+                  : mode === "service"
+                    ? "Oven type and size, what you need done, site details and when you need it."
+                    : "Products, specifications and quantities you are looking for."
               }
               className={`${fieldClass} py-2`}
             />
@@ -339,7 +350,13 @@ export function EnquiryForm({ mode }: { mode: Mode }) {
           aria-disabled={submitting || undefined}
           className="mt-4 inline-flex min-h-12 w-full items-center justify-center rounded-md bg-orange px-6 font-bold text-navy hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
         >
-          {submitting ? "Sending…" : mode === "quote" ? "Send quotation request" : "Send enquiry"}
+          {submitting
+            ? "Sending…"
+            : mode === "quote"
+              ? "Send quotation request"
+              : mode === "service"
+                ? "Send service request"
+                : "Send enquiry"}
         </button>
       </section>
     </form>

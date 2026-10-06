@@ -22,10 +22,10 @@ class SiteSettings(models.Model):
     chemical_division_url = models.URLField(default="https://karivexsolutionsltd.com/")
 
     primary_phone = models.CharField(
-        max_length=30, default="+254 710 851911", help_text="Main sales line, as displayed."
+        max_length=30, default="+254 742 355548", help_text="Main sales line, as displayed."
     )
     secondary_phone = models.CharField(
-        max_length=30, blank=True, default="+254 742 355548", help_text="Alternative sales line."
+        max_length=30, blank=True, default="+254 710 851911", help_text="Alternative sales line."
     )
     whatsapp_number_intl = models.CharField(
         max_length=20,
@@ -61,7 +61,7 @@ class SiteSettings(models.Model):
 
     homepage_headline = models.CharField(
         max_length=160,
-        default="Industrial Materials for Construction, Insulation & High-Temperature Applications",
+        default="Pizza Oven Materials, Building & Repair",
     )
     homepage_intro = models.TextField(blank=True)
 

@@ -13,9 +13,9 @@ import { ClockIcon, MailIcon, PhoneIcon, SearchIcon, WhatsAppIcon } from "./Icon
 import { MobileMenu } from "./MobileMenu";
 
 export const NAV_LINKS = [
-  { href: "/products", label: "Products" },
-  { href: "/categories", label: "Categories" },
-  { href: "/applications", label: "Applications" },
+  { href: "/products", label: "Oven Materials" },
+  { href: "/services", label: "Services" },
+  { href: "/pizza-oven-guide", label: "Oven Guide" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
@@ -82,10 +82,10 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
               </>
             )}
             <span className="flex min-w-0 flex-col border-l-2 border-orange pl-2 leading-tight sm:pl-3">
-              <span className="font-display text-[0.95rem] font-bold text-navy sm:text-lg">
+              <span className="font-display text-[0.95rem] font-bold text-navy sm:text-lg lg:whitespace-nowrap">
                 {settings.site_name}
               </span>
-              <span className="text-[0.65rem] font-semibold uppercase tracking-wider text-slate sm:text-xs">
+              <span className="text-[0.65rem] font-semibold uppercase tracking-wider text-slate sm:text-xs lg:whitespace-nowrap">
                 {settings.division_descriptor}
               </span>
             </span>
@@ -97,7 +97,7 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="rounded-md px-3 py-2 font-semibold text-navy hover:bg-mist hover:text-navy-700"
+                    className="whitespace-nowrap rounded-md px-3 py-2 font-semibold text-navy hover:bg-mist hover:text-navy-700"
                   >
                     {link.label}
                   </Link>
@@ -106,7 +106,7 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
             </ul>
           </nav>
 
-          <form action="/products" role="search" className="ml-2 hidden xl:block">
+          <form action="/products" role="search" className="ml-2 hidden 2xl:block">
             <label htmlFor="header-search" className="sr-only">
               Search materials
             </label>

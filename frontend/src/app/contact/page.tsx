@@ -14,7 +14,7 @@ export async function generateMetadata() {
   const settings = await loadSettings();
   return pageMetadata({
     title: "Contact KariVex Industrial Materials",
-    description: `Call ${settings.primary_phone}, WhatsApp or email ${settings.email} for insulation, refractory, packaging, refrigeration and industrial materials. ${settings.address_line}.`,
+    description: `Call ${settings.primary_phone}, WhatsApp or email ${settings.email} about pizza oven materials, oven building, repair and delivery. ${settings.address_line}.`,
     path: "/contact",
   });
 }
@@ -32,7 +32,7 @@ export default async function ContactPage() {
         breadcrumbs={<Breadcrumbs items={[{ name: "Contact", href: "/contact" }]} />}
       >
         <p>
-          Talk to our sales team about materials, specifications and quantities. {settings.relationship_wording}; we
+          Talk to us about pizza oven materials, building or repairing an oven, or delivery. {settings.relationship_wording}; we
           share the company&apos;s contact lines and warehouse.
         </p>
       </PageHero>

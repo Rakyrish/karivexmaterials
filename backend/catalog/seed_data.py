@@ -1117,3 +1117,42 @@ PRODUCTS = [
         ),
     },
 ]
+
+
+# ---------------------------------------------------------------------------
+# Public-site focus: pizza ovens (see catalog/seed_pizza.py).
+# The full supplied catalogue above stays in the database; anything outside
+# the pizza-oven focus is hidden ("archived"), never deleted.
+# ---------------------------------------------------------------------------
+from .seed_pizza import (  # noqa: E402
+    PIZZA_APPLICATIONS,
+    PIZZA_CATEGORIES,
+    PIZZA_PRODUCT_OVERRIDES,
+    PIZZA_SERVICES,
+)
+
+BASE_CATEGORIES, BASE_APPLICATIONS, BASE_PRODUCTS = CATEGORIES, APPLICATIONS, PRODUCTS
+
+CATEGORIES = PIZZA_CATEGORIES + [{**c, "status": "archived"} for c in BASE_CATEGORIES]
+APPLICATIONS = PIZZA_APPLICATIONS + [{**a, "status": "archived"} for a in BASE_APPLICATIONS]
+SERVICES = PIZZA_SERVICES
+
+
+def _focus(product):
+    override = PIZZA_PRODUCT_OVERRIDES.get(product["slug"])
+    if override is None:
+        return {**product, "status": "archived"}
+    merged = {**product, **override}
+    merged.setdefault("additional_categories", [])
+    if "additional_categories" not in override:
+        merged["additional_categories"] = []
+    merged.setdefault("status", product.get("status", "draft"))
+    return merged
+
+
+# Pizza products first (they define the public ordering), then the rest.
+PRODUCTS = sorted(
+    (_focus(p) for p in BASE_PRODUCTS),
+    key=lambda p: (p["slug"] not in PIZZA_PRODUCT_OVERRIDES,
+                   list(PIZZA_PRODUCT_OVERRIDES).index(p["slug"]) if p["slug"] in PIZZA_PRODUCT_OVERRIDES else 0),
+)

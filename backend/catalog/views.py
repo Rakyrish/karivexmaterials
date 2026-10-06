@@ -17,12 +17,14 @@ from .models import (
     ProductVariant,
     PublishStatus,
     Redirect,
+    Service,
 )
 from .serializers import (
     ApplicationSerializer,
     CategorySerializer,
     ProductCardSerializer,
     ProductDetailSerializer,
+    ServiceSerializer,
 )
 
 PUBLISHED = PublishStatus.PUBLISHED
@@ -99,6 +101,7 @@ class ProductDetailView(generics.RetrieveAPIView):
             "related_products__primary_category",
             "related_products__images",
             "related_products__variants",
+            "services",
         )
 
 
@@ -187,8 +190,10 @@ class SitemapView(APIView):
         products = published_products().values("slug", "updated_at").order_by("slug")
         categories = Category.objects.filter(status=PUBLISHED).values("slug", "updated_at")
         applications = Application.objects.filter(status=PUBLISHED).values("slug", "updated_at")
+        services = Service.objects.filter(status=PUBLISHED).values("slug", "updated_at")
         latest = published_products().aggregate(latest=Max("updated_at"))["latest"]
         return Response({
+            "services": list(services),
             "latest_product_update": latest,
             "products": list(products),
             "categories": list(categories),
@@ -201,3 +206,21 @@ class RedirectLookupView(APIView):
         path = request.query_params.get("path", "")
         redirect = get_object_or_404(Redirect, old_path=path.rstrip("/") or "/")
         return Response({"old_path": redirect.old_path, "new_path": redirect.new_path})
+
+
+class ServiceListView(generics.ListAPIView):
+    serializer_class = ServiceSerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        return Service.objects.filter(status=PUBLISHED).prefetch_related(
+            "related_products__primary_category", "related_products__images", "related_products__variants"
+        )
+
+
+class ServiceDetailView(generics.RetrieveAPIView):
+    serializer_class = ServiceSerializer
+    lookup_field = "slug"
+
+    def get_queryset(self):
+        return ServiceListView().get_queryset()

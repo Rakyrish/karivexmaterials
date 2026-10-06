@@ -60,8 +60,8 @@ def check(condition, message):
 
 
 # 1. Multi-item quotation through the public Next.js endpoint.
-eps = Product.objects.get(slug="eps-boxes")
-fish = eps.variants.get(label="Fish box")
+bricks = Product.objects.get(slug="fire-bricks-refractory-bricks")
+fish, _ = bricks.variants.get_or_create(label="E2E test size")
 key = uuid.uuid4().hex
 mail_dir = Path(settings.EMAIL_FILE_PATH)
 before_mail = set(mail_dir.glob("*.log")) if mail_dir.exists() else set()
@@ -70,7 +70,7 @@ payload = {
     "company": "", "phone": "", "delivery_location": "Nakuru", "project_notes": "Synthetic local test",
     "idempotency_key": key,
     "items": [
-        {"product_slug": "eps-boxes", "variant_id": fish.id, "quantity": "150", "unit": "boxes", "notes": ""},
+        {"product_slug": "fire-bricks-refractory-bricks", "variant_id": fish.id, "quantity": "150", "unit": "bricks", "notes": ""},
         {"product_slug": "ceramic-fibre-blanket", "quantity": "3", "unit": "rolls", "notes": "25 mm"},
     ],
 }
@@ -79,7 +79,7 @@ check(status == 201, f"quote submit via Next returns 201 (got {status})")
 reference = body.get("reference_number", "")
 enquiry = Enquiry.objects.filter(reference_number=reference).first()
 check(enquiry is not None and enquiry.items.count() == 2, "enquiry and 2 line items persisted")
-check(enquiry and enquiry.items.first().variant_label_snapshot == "Fish box", "variant snapshot stored")
+check(enquiry and enquiry.items.first().variant_label_snapshot == "E2E test size", "variant snapshot stored")
 check(enquiry and enquiry.notification_sent, "notification recorded as sent (local file backend)")
 
 status2, body2 = post_json(f"{SITE}/api/enquiry", payload)
@@ -129,6 +129,7 @@ image.image = SimpleUploadedFile("e2e-replacement.png", buffer2.getvalue(), cont
 image.save()
 check(not old_path.exists(), "replaced image file removed from storage")
 image.delete()
+fish.delete()
 
 if failures:
     print(f"\n{len(failures)} failure(s)")

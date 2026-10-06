@@ -31,6 +31,7 @@ def build_body(enquiry):
     lines = [
         f"Reference: {enquiry.reference_number}",
         f"Type: {enquiry.get_kind_display()}",
+        *([f"Service: {enquiry.service_name_snapshot}"] if enquiry.service_name_snapshot else []),
         f"Received: {timezone.localtime(enquiry.created_at):%Y-%m-%d %H:%M} (Nairobi)",
         "",
         f"Name: {enquiry.name}",

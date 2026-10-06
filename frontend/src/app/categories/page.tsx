@@ -7,9 +7,9 @@ import { loadCategories } from "@/lib/data";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "Product Categories",
+  title: "Pizza Oven Material Categories",
   description:
-    "The six KariVex Industrial Materials product categories: building and acoustic insulation, refractory and high-temperature materials, roof ventilation and cladding, EPS packaging, refrigeration and HVAC materials, and industrial tapes and sealants.",
+    "Pizza oven materials by part of the oven: floor and hearth, dome and walls, insulation, and door seals and finishing.",
   path: "/categories",
 });
 
@@ -18,10 +18,10 @@ export default async function CategoriesPage() {
   return (
     <>
       <PageHero
-        title="Product categories"
+        title="Pizza oven materials by part of the oven"
         breadcrumbs={<Breadcrumbs items={[{ name: "Categories", href: "/categories" }]} />}
       >
-        <p>Each product has one page, and products that serve more than one purpose appear in each relevant category.</p>
+        <p>Choose the part of the oven you are working on. Materials used in more than one part appear in each.</p>
       </PageHero>
       <Container className="py-10">
         <ul className="grid gap-5 md:grid-cols-2">

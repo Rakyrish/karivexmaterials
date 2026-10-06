@@ -42,8 +42,25 @@ after upgrades to refresh group permissions.
 * **Review / internal notes.** This is where open questions are tracked. It's never shown publicly.
 * Changes appear on the public site on the next page load after saving.
 
+## Services
+
+**Catalogue → Services** holds the four pizza-oven services. Edit the summary, description,
+"includes" and "what to tell us" lists, FAQs and related materials. Describe only what you actually
+offer, with no prices, timelines or guarantees unless confirmed. Draft or hidden services disappear
+from the site.
+
+## Prices, FAQs and hidden products
+
+* **Price (optional):** enter a confirmed price, currency (KES), unit and a "valid until" date to show
+  the price and publish Offer markup for search engines. Leave blank for quote-only products.
+* **FAQs:** write `Q: question` then `A: answer` on the next line, with a blank line between pairs.
+  They appear on the page and are marked up for search engines.
+* **Hidden (outside current focus):** the status used for non-pizza products. They stay in the
+  database and can be re-published at any time.
+
 ## Enquiries
 
+* Enquiry types: Quotation request, Service request (shows the service name) and General enquiry.
 * Every quotation and contact form submission is saved with a reference (`KVM-YYYYMMDD-XXXXXX`)
   and a snapshot of the requested products and options, so later catalogue edits don't change it.
 * Set the status as you work: **New → In Progress → Quoted → Closed**. Use *Internal notes* for staff.

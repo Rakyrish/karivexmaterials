@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { NOINDEX_ALL, PARENT_ORG_ID, PARENT_SITE, SITE_ORIGIN, absoluteUrl } from "./config";
-import type { SiteSettings } from "./types";
+import type { ServiceRef, SiteSettings } from "./types";
 
 const OG_IMAGE = { url: "/brand/og-default.png", width: 1200, height: 630, alt: "KariVex Industrial Materials" };
 
@@ -44,9 +44,23 @@ export function pageMetadata(opts: {
   };
 }
 
+// Structured hours are only published while the displayed hours match the
+// verified schedule; if an admin changes the text, the structured version is
+// dropped rather than going stale.
+const VERIFIED_HOURS_TEXT = "Monday–Friday 08:00–17:00; Saturday 08:00–13:00";
+const VERIFIED_HOURS = [
+  {
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    opens: "08:00",
+    closes: "17:00",
+  },
+  { "@type": "OpeningHoursSpecification", dayOfWeek: "Saturday", opens: "08:00", closes: "13:00" },
+];
+
 /** Division identity: an Organization that is part of (not separate from)
  * KariVex Solutions Ltd, linked to the parent's existing @id. */
-export function organizationJsonLd(settings: SiteSettings) {
+export function organizationJsonLd(settings: SiteSettings, services: ServiceRef[] = []) {
   const telephones = [settings.primary_phone_href, settings.secondary_phone_href]
     .filter(Boolean)
     .map((href) => (href as string).replace(/^tel:/, ""));
@@ -72,7 +86,26 @@ export function organizationJsonLd(settings: SiteSettings) {
       contactType: "sales",
       telephone,
       email: settings.email,
+      ...(settings.hours_text === VERIFIED_HOURS_TEXT ? { hoursAvailable: VERIFIED_HOURS } : {}),
     })),
+    knowsAbout: ["Pizza ovens", "Refractory materials", "Fire bricks", "Oven insulation"],
+    ...(services.length
+      ? {
+          hasOfferCatalog: {
+            "@type": "OfferCatalog",
+            name: "Pizza oven services",
+            itemListElement: services.map((service) => ({
+              "@type": "Offer",
+              itemOffered: {
+                "@type": "Service",
+                name: service.name,
+                description: service.summary,
+                url: absoluteUrl(`/services/${service.slug}`),
+              },
+            })),
+          },
+        }
+      : {}),
     parentOrganization: {
       "@type": "Organization",
       "@id": PARENT_ORG_ID,

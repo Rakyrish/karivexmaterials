@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { AVAILABILITY_LABELS } from "@/lib/config";
+import { productFallbackImage } from "@/lib/images";
 import type { ProductCard as ProductCardData } from "@/lib/types";
 
 import { ArrowRightIcon } from "./Icons";
@@ -11,7 +12,10 @@ export function ProductCard({ product, headingLevel = 3 }: { product: ProductCar
   const href = `/products/${product.slug}`;
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-xl border border-line bg-white transition-shadow hover:shadow-lg focus-within:shadow-lg">
-      <ProductVisual image={product.primary_image} label={product.name} sizes="(min-width:1024px) 25vw, (min-width:640px) 50vw, 100vw" />
+      <ProductVisual
+        image={product.primary_image}
+        fallback={productFallbackImage(product.slug, product.primary_category.slug)}
+        label={product.name} sizes="(min-width:1024px) 25vw, (min-width:640px) 50vw, 100vw" />
       <div className="flex flex-1 flex-col p-5">
         <p className="text-xs font-semibold uppercase tracking-wider text-slate">{product.primary_category.name}</p>
         <Heading className="mt-1 font-display text-lg font-bold leading-snug text-navy">

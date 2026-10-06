@@ -4,13 +4,15 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { AddToQuote } from "@/components/AddToQuote";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Gallery } from "@/components/Gallery";
+import { FaqSection } from "@/components/FaqSection";
 import { CheckIcon, FileIcon } from "@/components/Icons";
 import { JsonLd } from "@/components/JsonLd";
 import { ProductCard } from "@/components/ProductCard";
 import { Container } from "@/components/Section";
 import { getProduct, getRedirect } from "@/lib/api";
-import { AVAILABILITY_LABELS, absoluteUrl } from "@/lib/config";
+import { AVAILABILITY_LABELS, SITE_ORIGIN, absoluteUrl } from "@/lib/config";
 import { loadSettings } from "@/lib/data";
+import { productFallbackImage } from "@/lib/images";
 import { pageMetadata } from "@/lib/seo";
 import type { ProductDetail, Variant } from "@/lib/types";
 
@@ -37,12 +39,27 @@ export async function generateMetadata({ params }: PageProps<"/products/[slug]">
   const product = await getProduct(slug);
   if (!product) return { title: "Product not found", robots: { index: false } };
   const primaryImage = product.images.find((i) => i.is_primary) ?? product.images[0];
+  const fallback = productFallbackImage(product.slug, product.primary_category.slug);
   return pageMetadata({
     title: product.seo_title || product.name,
     description: product.seo_description || product.short_summary || product.description,
     path: `/products/${product.slug}`,
-    image: primaryImage?.image ? absoluteUrl(primaryImage.image) : null,
+    image: primaryImage?.image
+      ? absoluteUrl(primaryImage.image)
+      : fallback
+        ? absoluteUrl(fallback.src.src)
+        : null,
   });
+}
+
+const SCHEMA_AVAILABILITY: Record<string, string> = {
+  in_stock: "https://schema.org/InStock",
+  on_order: "https://schema.org/BackOrder",
+};
+
+function formatPrice(price: string, currency: string) {
+  const value = Number(price);
+  return `${currency} ${value.toLocaleString("en-KE", { minimumFractionDigits: value % 1 ? 2 : 0, maximumFractionDigits: 2 })}`;
 }
 
 function productJsonLd(product: ProductDetail) {
@@ -60,6 +77,21 @@ function productJsonLd(product: ProductDetail) {
   if (product.images.length) data.image = product.images.map((i) => absoluteUrl(i.image));
   if (product.brand) data.brand = { "@type": "Brand", name: product.brand };
   if (product.sku) data.sku = product.sku;
+  if (product.offer) {
+    // Only published when an administrator has entered a confirmed price.
+    data.offers = {
+      "@type": "Offer",
+      url: absoluteUrl(`/products/${product.slug}`),
+      price: product.offer.price,
+      priceCurrency: product.offer.currency,
+      itemCondition: "https://schema.org/NewCondition",
+      ...(product.offer.valid_until ? { priceValidUntil: product.offer.valid_until } : {}),
+      ...(SCHEMA_AVAILABILITY[product.availability_status]
+        ? { availability: SCHEMA_AVAILABILITY[product.availability_status] }
+        : {}),
+      seller: { "@id": `${SITE_ORIGIN}/#division` },
+    };
+  }
   if (product.specifications.length) {
     data.additionalProperty = product.specifications.map((s) => ({
       "@type": "PropertyValue",
@@ -98,7 +130,11 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
 
       <Container className="grid gap-10 py-10 lg:grid-cols-[1.1fr_1fr]">
         <div>
-          <Gallery images={product.images} productName={product.name} />
+          <Gallery
+            images={product.images}
+            productName={product.name}
+            fallback={productFallbackImage(product.slug, product.primary_category.slug)}
+          />
         </div>
         <div>
           <p className="text-sm font-bold uppercase tracking-wider text-slate">
@@ -108,6 +144,15 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
           </p>
           <h1 className="mt-2 font-display text-3xl font-extrabold text-navy sm:text-4xl">{product.name}</h1>
           {product.short_summary && <p className="mt-3 text-lg text-slate">{product.short_summary}</p>}
+          {product.offer && (
+            <p className="mt-4 text-2xl font-extrabold text-navy">
+              {formatPrice(product.offer.price, product.offer.currency)}
+              {product.offer.unit && <span className="ml-2 text-base font-semibold text-slate">{product.offer.unit}</span>}
+              <span className="mt-1 block text-sm font-normal text-slate">
+                Delivery and quantity pricing confirmed on your quotation.
+              </span>
+            </p>
+          )}
           <dl className="mt-5 grid grid-cols-2 gap-3 text-sm">
             <div className="rounded-lg bg-mist p-3">
               <dt className="font-semibold text-navy">Availability</dt>
@@ -236,6 +281,8 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
             )}
           </section>
 
+          <FaqSection faqs={product.faqs ?? []} title={`${product.name}: common questions`} />
+
           {product.documents.length > 0 && (
             <section aria-labelledby="docs">
               <h2 id="docs" className="font-display text-2xl font-bold text-navy">
@@ -259,6 +306,22 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
         </div>
 
         <aside className="space-y-6">
+          {(product.services ?? []).length > 0 && (
+            <div className="rounded-xl bg-navy p-6 text-white">
+              <h2 className="font-display text-xl font-bold">Want us to do the work?</h2>
+              <p className="mt-1 text-sm text-white/80">This material is used in these services:</p>
+              <ul className="mt-3 space-y-2">
+                {product.services.map((service) => (
+                  <li key={service.slug}>
+                    <Link href={`/services/${service.slug}`} className="font-semibold text-orange hover:underline">
+                      {service.name}
+                    </Link>
+                    <p className="text-sm text-white/80">{service.summary}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           {product.selection_notes.length > 0 && (
             <div className="rounded-xl border border-line bg-white p-6">
               <h2 className="font-display text-xl font-bold text-navy">What to tell us</h2>

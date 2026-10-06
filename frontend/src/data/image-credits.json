@@ -1,0 +1,122 @@
+[
+  {
+    "key": "neapolitan-pizza",
+    "file": "neapolitan-pizza.jpg",
+    "alt": "A Neapolitan-style pizza with a charred, puffy crust, fresh from a wood-fired oven",
+    "width": 2400,
+    "height": 1219,
+    "title": "Pizza Tradición Napolitana.jpg",
+    "artist": "Rjcastillo",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Pizza_Tradici%C3%B3n_Napolitana.jpg"
+  },
+  {
+    "key": "wood-fired-oven-pizzas",
+    "file": "wood-fired-oven-pizzas.jpg",
+    "alt": "Pizzas baking beside a wood fire inside a domed brick oven",
+    "width": 1920,
+    "height": 1280,
+    "title": "Wood fire brick oven for baking pizza.jpg",
+    "artist": "Basheer Tome",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Wood_fire_brick_oven_for_baking_pizza.jpg"
+  },
+  {
+    "key": "pizza-peel-oven",
+    "file": "pizza-peel-oven.jpg",
+    "alt": "A pizza being slid into a wood-fired oven on a wooden peel",
+    "width": 1920,
+    "height": 1280,
+    "title": "Pizza baking in Wood-fired oven.jpg",
+    "artist": "Jared Tarbell from Awesometown, United States of America",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Pizza_baking_in_Wood-fired_oven.jpg"
+  },
+  {
+    "key": "oven-fire-floor",
+    "file": "oven-fire-floor.jpg",
+    "alt": "Wood fire burning inside a brick pizza oven dome, lighting the oven floor",
+    "width": 1920,
+    "height": 1280,
+    "title": "Brick-oven-thumbnail.jpg",
+    "artist": "Beboplu",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Brick-oven-thumbnail.jpg"
+  },
+  {
+    "key": "fire-brick",
+    "file": "fire-brick.jpg",
+    "alt": "A single fire brick photographed beside a measuring scale",
+    "width": 1920,
+    "height": 1440,
+    "title": "Fire brick (AM 703842-1).jpg",
+    "artist": "Unknown author; photo: Auckland War Memorial Museum",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Fire_brick_(AM_703842-1).jpg"
+  },
+  {
+    "key": "pizzaiolo-oven",
+    "file": "pizzaiolo-oven.jpg",
+    "alt": "A pizza maker working at a brick wood-fired oven with a long peel",
+    "width": 1341,
+    "height": 1146,
+    "title": "Pizza in oven.jpg",
+    "artist": "Dimitri Neyt (DimiTalen, DimiCalifornia)",
+    "license": "Public domain",
+    "licenseUrl": "",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Pizza_in_oven.jpg"
+  },
+  {
+    "key": "tiled-oven-mouth",
+    "file": "tiled-oven-mouth.jpg",
+    "alt": "Flames inside a tiled commercial pizza oven, seen through the oven mouth",
+    "width": 1920,
+    "height": 1152,
+    "title": "Punch Neapolitan Pizza (2257039638).jpg",
+    "artist": "Tony Webster from Portland, Oregon, United States",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Punch_Neapolitan_Pizza_(2257039638).jpg"
+  },
+  {
+    "key": "vermiculite",
+    "file": "vermiculite.jpg",
+    "alt": "A small pile of vermiculite granules",
+    "width": 1920,
+    "height": 1254,
+    "title": "Vermiculit (Zonolith).jpg",
+    "artist": "Slashme",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Vermiculit_(Zonolith).jpg"
+  },
+  {
+    "key": "margherita-pizza",
+    "file": "margherita-pizza.jpg",
+    "alt": "A Neapolitan-style margherita pizza with basil",
+    "width": 1920,
+    "height": 1440,
+    "title": "Margherita Originale.JPG",
+    "artist": "Mario56",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Margherita_Originale.JPG"
+  },
+  {
+    "key": "pizzeria-brick-oven",
+    "file": "pizzeria-brick-oven.jpg",
+    "alt": "Kitchen staff beside a round brick pizza oven in a pizzeria",
+    "width": 1920,
+    "height": 1277,
+    "title": "Oven at Punch Pizza, Highland Park, Saint Paul (2198176403).jpg",
+    "artist": "Aaron Landry from Honolulu, HI, USA",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Oven_at_Punch_Pizza,_Highland_Park,_Saint_Paul_(2198176403).jpg"
+  }
+]

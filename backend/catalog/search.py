@@ -23,6 +23,8 @@ EQUIVALENT_TERMS = [
     ["ceramic", "rcf"],
     ["mortar", "jointing"],
     ["colour", "color"],
+    ["door seal", "door rope", "door gasket", "rope seal"],
+    ["hearth", "oven floor"],
 ]
 
 SEARCH_FIELDS = ["name", "synonyms", "short_summary", "description", "brand", "sku"]

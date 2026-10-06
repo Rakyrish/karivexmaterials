@@ -1,8 +1,9 @@
 # KariVex Industrial Materials
 
-Catalogue and quotation website for **KariVex Industrial Materials**, the
-Industrial Materials Division of KariVex Solutions Ltd. Intended production
-address: `https://materials.karivexsolutionsltd.com`.
+Pizza-oven materials and services website for **KariVex Industrial Materials**,
+the Industrial Materials Division of KariVex Solutions Ltd. Intended production
+address: `https://materials.karivexsolutionsltd.com`. Since 6 October 2026 the
+public site focuses on pizza ovens. See `docs/pizza-focus.md`.
 
 | Part | Stack |
 | --- | --- |
@@ -87,7 +88,7 @@ Source: `assets/logo-source/logo-original.png` (an identical copy of the supplie
 ## Checks
 
 ```sh
-cd backend && .venv/bin/python manage.py test                 # 35 backend tests (Postgres)
+cd backend && .venv/bin/python manage.py test                 # 44 backend tests (Postgres)
 cd frontend && npm run lint && npm run build                   # lint + type-check + production build
 # with both servers running:
 backend/.venv/bin/python -I scripts/smoke_check.py             # pages, canonicals, 404s, sitemap, robots
@@ -98,6 +99,7 @@ See `docs/verification.md` for what was actually run and the results.
 
 ## Documentation
 
+* `docs/pizza-focus.md` — what is public, services, photos and licences, SEO and rich results
 * `docs/deployment.md` — server, DNS, TLS, proxy, email, Search Console, backups, rollback
 * `docs/admin-guide.md` — creating staff accounts, editing the catalogue, handling enquiries
 * `docs/catalogue-mapping.md` — where every supplied catalogue item ended up

@@ -3,21 +3,34 @@ import datetime
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
-from catalog.models import Application, Category, Product, ProductSpecification, ProductVariant
-from catalog.seed_data import APPLICATIONS, CATEGORIES, PRODUCTS
+from catalog.models import (
+    Application,
+    Category,
+    Product,
+    ProductSpecification,
+    ProductVariant,
+    Service,
+)
+from catalog.seed_data import APPLICATIONS, CATEGORIES, PRODUCTS, SERVICES
 from sitesettings.models import SiteSettings
 
-CATEGORY_FIELDS = ["name", "short_code", "intro", "quote_checklist", "order"]
+CATEGORY_FIELDS = ["name", "short_code", "intro", "quote_checklist", "order", "seo_title", "seo_description"]
 APPLICATION_FIELDS = ["name", "summary", "intro", "considerations", "order"]
 PRODUCT_FIELDS = [
     "name", "brand", "synonyms", "short_summary", "description", "selection_notes",
-    "review_notes", "sales_unit", "moq_unit",
+    "review_notes", "sales_unit", "moq_unit", "seo_title", "seo_description", "faqs",
+]
+SERVICE_FIELDS = [
+    "name", "summary", "description", "includes", "request_checklist", "order", "review_notes",
+    "seo_title", "seo_description", "faqs",
 ]
 VARIANT_FIELDS = ["thickness", "dimensions", "density", "diameter", "box_capacity", "pack_size"]
 
 # Date the contact details in SiteSettings defaults were checked against
 # https://karivexsolutionsltd.com/ and /contact.
 CONTACTS_VERIFIED_ON = datetime.date(2026, 10, 6)
+
+OLD_HOMEPAGE_HEADLINE = "Industrial Materials for Construction, Insulation & High-Temperature Applications"
 
 
 class Command(BaseCommand):
@@ -45,13 +58,17 @@ class Command(BaseCommand):
         reset_status = options["reset_status"]
         if reset_status and not update:
             raise CommandError("--reset-status requires --update.")
-        created = {"categories": 0, "applications": 0, "products": 0, "variants": 0, "specifications": 0}
-        updated = {"categories": 0, "applications": 0, "products": 0}
+        created = {
+            "categories": 0, "applications": 0, "products": 0, "variants": 0,
+            "specifications": 0, "services": 0,
+        }
+        updated = {"categories": 0, "applications": 0, "products": 0, "services": 0}
 
         category_by_code = {}
         for data in CATEGORIES:
             obj, was_created = Category.objects.get_or_create(
-                slug=data["slug"], defaults={f: data.get(f, "") for f in CATEGORY_FIELDS}
+                slug=data["slug"],
+                defaults={**{f: data.get(f, "") for f in CATEGORY_FIELDS}, "status": data.get("status", "published")},
             )
             category_by_code[data["short_code"]] = obj
             if was_created:
@@ -59,13 +76,16 @@ class Command(BaseCommand):
             elif update:
                 for f in CATEGORY_FIELDS:
                     setattr(obj, f, data.get(f, ""))
+                if reset_status:
+                    obj.status = data.get("status", "published")
                 obj.save()
                 updated["categories"] += 1
 
         application_by_slug = {}
         for data in APPLICATIONS:
             obj, was_created = Application.objects.get_or_create(
-                slug=data["slug"], defaults={f: data.get(f, "") for f in APPLICATION_FIELDS}
+                slug=data["slug"],
+                defaults={**{f: data.get(f, "") for f in APPLICATION_FIELDS}, "status": data.get("status", "published")},
             )
             application_by_slug[data["slug"]] = obj
             if was_created:
@@ -73,6 +93,8 @@ class Command(BaseCommand):
             elif update:
                 for f in APPLICATION_FIELDS:
                     setattr(obj, f, data.get(f, ""))
+                if reset_status:
+                    obj.status = data.get("status", "published")
                 obj.save()
                 updated["applications"] += 1
 
@@ -126,12 +148,39 @@ class Command(BaseCommand):
         slugs = {p.slug: p for p in Product.objects.filter(slug__in=[d["slug"] for d in PRODUCTS])}
         for product, data in touched:
             related = [slugs[s] for s in data.get("related", []) if s in slugs]
-            if related:
+            if update:
+                product.related_products.set(related)
+            elif related:
                 product.related_products.add(*related)
 
+        for data in SERVICES:
+            fields = {f: data.get(f, "") for f in SERVICE_FIELDS}
+            service, was_created = Service.objects.get_or_create(
+                slug=data["slug"], defaults={**fields, "status": data.get("status", "draft")}
+            )
+            if was_created:
+                created["services"] += 1
+            elif update:
+                for f, value in fields.items():
+                    setattr(service, f, value)
+                if reset_status:
+                    service.status = data.get("status", "draft")
+                service.save()
+                updated["services"] += 1
+            else:
+                continue
+            service.related_products.set([slugs[s] for s in data.get("related", []) if s in slugs])
+
         site = SiteSettings.load()
+        changed = False
         if site.contact_verified_on is None:
             site.contact_verified_on = CONTACTS_VERIFIED_ON
+            changed = True
+        # Move an untouched pre-pizza-focus headline to the new default.
+        if site.homepage_headline == OLD_HOMEPAGE_HEADLINE:
+            site.homepage_headline = SiteSettings._meta.get_field("homepage_headline").default
+            changed = True
+        if changed:
             site.save()
 
         self.stdout.write(self.style.SUCCESS(f"Created: {created}."))

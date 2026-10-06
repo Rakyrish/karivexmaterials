@@ -37,7 +37,7 @@ export default async function PrivacyPage() {
           <h2 className={h2}>What we collect and why</h2>
           <ul className="list-disc space-y-2 pl-6">
             <li>
-              <strong>Quotation and contact forms:</strong> your name, email address and any optional details you give
+              <strong>Quotation, service request and contact forms:</strong> your name, email address and any optional details you give
               (company, phone, delivery location, project notes) and the products, options, quantities and notes in your
               request. We use these only to respond to your enquiry, prepare quotations and follow up on that request.
             </li>

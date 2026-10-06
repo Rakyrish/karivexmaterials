@@ -75,7 +75,7 @@ def main():
         check('"@type":"BreadcrumbList"' in body, f"{path}: missing BreadcrumbList")
     print(f"checked {len(products)} published product pages")
 
-    for slug in ["max-50", "maxheat-k", "fondu-cement", "pharmaceutical-cold-chain-boxes", "no-such-product"]:
+    for slug in ["max-50", "maxheat-k", "fondu-cement", "pharmaceutical-cold-chain-boxes", "eps-boxes", "no-such-product"]:
         status, headers, body = get(f"{args.site}/products/{slug}")
         check(status == 404, f"/products/{slug}: expected 404, got {status} {headers.get('Location')}")
         check("noindex" in body, f"/products/{slug}: 404 page should be noindex")
@@ -88,7 +88,16 @@ def main():
             check(canonical(body) == ORIGIN + path, f"{path}: canonical {canonical(body)}")
             check(len(h1(body)) == 1, f"{path}: h1 count {len(h1(body))}")
 
-    for path in ["/", "/products", "/categories", "/applications", "/about", "/contact", "/privacy"]:
+    for service in get_json(f"{args.api}/api/v1/services/"):
+        path = f"/services/{service['slug']}"
+        status, _, body = get(args.site + path)
+        check(status == 200, f"{path}: status {status}")
+        check(canonical(body) == ORIGIN + path, f"{path}: canonical {canonical(body)}")
+        check(len(h1(body)) == 1, f"{path}: h1 count {len(h1(body))}")
+        check('"@type":"Service"' in body and '"@type":"FAQPage"' in body, f"{path}: Service/FAQ JSON-LD")
+
+    for path in ["/", "/products", "/categories", "/applications", "/services", "/pizza-oven-guide",
+                 "/about", "/contact", "/privacy", "/image-credits"]:
         status, _, body = get(args.site + path)
         check(status == 200, f"{path}: status {status}")
         check(canonical(body) == (ORIGIN + path).rstrip("/") or canonical(body) == ORIGIN + path, f"{path}: canonical {canonical(body)}")
@@ -114,12 +123,16 @@ def main():
     check("Disallow: /products" not in robots, "robots must not block product pages")
 
     status, _, home = get(args.site + "/")
-    for needle in ["tel:+254710851911", "tel:+254742355548", "mailto:info@karivexsolutionsltd.com", "https://wa.me/254710851911"]:
+    for needle in ["tel:+254742355548", "tel:+254710851911", "mailto:info@karivexsolutionsltd.com",
+                   "https://wa.me/254710851911", 'aria-label="Quick contact"']:
         check(needle in home, f"homepage missing {needle}")
     check("karivexsolutionsltd.com/#organization" in home, "parentOrganization reference missing")
 
-    status, _, page = get(args.site + "/products/eps-boxes")
-    check("wa.me/254710851911?text=" in page and "products%2Feps-boxes" in page, "product WhatsApp link missing product URL")
+    status, _, page = get(args.site + "/products/fire-bricks-refractory-bricks")
+    check("wa.me/254710851911?text=" in page and "products%2Ffire-bricks-refractory-bricks" in page,
+          "product WhatsApp link missing product URL")
+    check('"@type":"FAQPage"' in page, "product FAQ JSON-LD missing")
+    check('"offers"' not in page, "product without confirmed price must not publish offers")
 
     if failures:
         print(f"{len(failures)} FAILURE(S):")

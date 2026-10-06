@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { FilterForm, ProductGrid } from "@/components/ProductGrid";
 import { Container, PageHero } from "@/components/Section";
@@ -13,9 +15,9 @@ export async function generateMetadata({ searchParams }: PageProps<"/products">)
   const filtered = FILTER_KEYS.some((key) => first(params, key));
   const page = pageNumber(params);
   return pageMetadata({
-    title: page > 1 && !filtered ? `Industrial Materials Catalogue — Page ${page}` : "Industrial Materials Catalogue",
+    title: page > 1 && !filtered ? `Pizza Oven Materials — Page ${page}` : "Pizza Oven Materials",
     description:
-      "Search and filter the KariVex Industrial Materials catalogue: insulation, refractory and ceramic fibre, roof ventilators, EPS boxes, refrigeration materials and industrial tapes.",
+      "Fire bricks, refractory cement and mortar, castable, ceramic fibre blanket, vermiculite, perlite, door rope and high-temperature sealants for building and repairing pizza ovens.",
     path: "/products",
     // Search and filter combinations are not indexed; plain pagination is.
     canonicalPath: !filtered && page > 1 ? `/products?page=${page}` : "/products",
@@ -43,13 +45,17 @@ export default async function ProductsPage({ searchParams }: PageProps<"/product
   return (
     <>
       <PageHero
-        title={q ? `Search results for “${q}”` : "Industrial materials catalogue"}
+        title={q ? `Search results for “${q}”` : "Pizza oven materials"}
         breadcrumbs={<Breadcrumbs items={[{ name: "Products", href: "/products" }]} />}
       >
         <p>
           {products.count} product{products.count === 1 ? "" : "s"}
-          {q || category || application || availability ? " match your search" : " across six categories"}. Add items to
-          your quote basket and send one request.
+          {q || category || application || availability ? " match your search" : " for oven floors, domes, insulation and doors"}.
+          Add items to your quote basket and send one request — or{" "}
+          <Link href="/services" className="font-semibold text-navy underline">
+            ask us to build or repair your oven
+          </Link>
+          .
         </p>
       </PageHero>
       <Container className="grid gap-8 py-10 lg:grid-cols-[18rem_1fr]">

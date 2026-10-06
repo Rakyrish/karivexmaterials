@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -6,6 +7,8 @@ import { CheckIcon } from "@/components/Icons";
 import { FilterForm, ProductGrid } from "@/components/ProductGrid";
 import { Container, PageHero } from "@/components/Section";
 import { getCategory, getFacets, getProducts } from "@/lib/api";
+import { absoluteUrl } from "@/lib/config";
+import { categoryImage } from "@/lib/images";
 import { first, pageNumber } from "@/lib/params";
 import { pageMetadata } from "@/lib/seo";
 
@@ -23,7 +26,7 @@ export async function generateMetadata({ params, searchParams }: PageProps<"/cat
     path,
     canonicalPath: !filtered && page > 1 ? `${path}?page=${page}` : path,
     index: !filtered,
-    image: category.image,
+    image: category.image ?? (categoryImage(category.slug) ? absoluteUrl(categoryImage(category.slug)!.src.src) : null),
   });
 }
 
@@ -68,6 +71,24 @@ export default async function CategoryPage({ params, searchParams }: PageProps<"
       </PageHero>
       <Container className="grid gap-8 py-10 lg:grid-cols-[18rem_1fr]">
         <aside className="space-y-6">
+          {(() => {
+            const img = categoryImage(category.slug);
+            if (category.image) {
+              return (
+                <div className="relative aspect-[4/3] overflow-hidden rounded-xl">
+                  <Image src={category.image} alt={category.image_alt} fill sizes="18rem" className="object-cover" />
+                </div>
+              );
+            }
+            return img ? (
+              <figure className="overflow-hidden rounded-xl border border-line">
+                <div className="relative aspect-[4/3]">
+                  <Image src={img.src} alt={img.alt} fill placeholder="blur" sizes="18rem" className="object-cover" />
+                </div>
+                <figcaption className="px-3 py-2 text-xs text-slate">Illustrative photo</figcaption>
+              </figure>
+            ) : null;
+          })()}
           <FilterForm
             action={path}
             q={q}

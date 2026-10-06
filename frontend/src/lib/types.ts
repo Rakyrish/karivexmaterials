@@ -132,6 +132,9 @@ export interface ProductDetail {
   images: ProductImage[];
   documents: ProductDocument[];
   related_products: ProductCard[];
+  services: ServiceRef[];
+  faqs: Faq[];
+  offer: Offer | null;
   seo_title: string;
   seo_description: string;
   updated_at: string;
@@ -158,8 +161,41 @@ export interface Facets {
   facets: { key: string; label: string; values: FacetValue[] }[];
 }
 
+export interface Faq {
+  question: string;
+  answer: string;
+}
+
+export interface Offer {
+  price: string;
+  currency: string;
+  unit: string;
+  valid_until: string | null;
+}
+
+export interface ServiceRef {
+  name: string;
+  slug: string;
+  summary: string;
+}
+
+export interface Service extends ServiceRef {
+  id: number;
+  description: string;
+  includes: string[];
+  request_checklist: string[];
+  faqs: Faq[];
+  related_products: ProductCard[];
+  image: string | null;
+  image_alt: string;
+  seo_title: string;
+  seo_description: string;
+  updated_at: string;
+}
+
 export interface SitemapData {
   latest_product_update: string | null;
+  services: { slug: string; updated_at: string }[];
   products: { slug: string; updated_at: string }[];
   categories: { slug: string; updated_at: string }[];
   applications: { slug: string; updated_at: string }[];

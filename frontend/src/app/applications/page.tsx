@@ -7,9 +7,9 @@ import { getApplications } from "@/lib/api";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "Applications",
+  title: "Pizza Oven Projects",
   description:
-    "Materials and selection considerations for roofing and building insulation, bakeries and pizza ovens, industrial furnaces, high-temperature insulation, refrigeration and HVAC, and cold-chain packaging.",
+    "Materials and planning considerations for new pizza oven builds, oven repair and relining, pizzerias and restaurants, and home pizza ovens.",
   path: "/applications",
 });
 
@@ -18,12 +18,12 @@ export default async function ApplicationsPage() {
   return (
     <>
       <PageHero
-        title="Materials by application"
-        breadcrumbs={<Breadcrumbs items={[{ name: "Applications", href: "/applications" }]} />}
+        title="Pizza oven projects"
+        breadcrumbs={<Breadcrumbs items={[{ name: "Oven projects", href: "/applications" }]} />}
       >
         <p>
-          Start from the job you are doing. Each page explains what to consider when choosing materials and lists the
-          relevant products from the catalogue.
+          Start from the job you are doing. Each page explains what to plan for and lists the materials — and you can
+          always ask us to do the work.
         </p>
       </PageHero>
       <Container className="py-10">

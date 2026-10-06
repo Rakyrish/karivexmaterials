@@ -13,13 +13,14 @@ from .models import (
     ProductSpecification,
     ProductVariant,
     Redirect,
+    Service,
 )
 
 CATALOG_MODELS = (
     Application, Category, Product, ProductDocument, ProductImage,
-    ProductSpecification, ProductVariant, Redirect,
+    ProductSpecification, ProductVariant, Redirect, Service,
 )
-FILE_FIELDS = {ProductImage: "image", ProductDocument: "file", Category: "image", Application: "image"}
+FILE_FIELDS = {ProductImage: "image", ProductDocument: "file", Category: "image", Application: "image", Service: "image"}
 
 
 def _delete_file_later(field_file):

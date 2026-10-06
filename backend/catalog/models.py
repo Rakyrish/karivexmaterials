@@ -24,6 +24,8 @@ class TimeStampedModel(models.Model):
 class PublishStatus(models.TextChoices):
     DRAFT = "draft", "Draft (in review)"
     PUBLISHED = "published", "Published"
+    # Kept in the database but outside the site's current pizza-oven focus.
+    ARCHIVED = "archived", "Hidden (outside current focus)"
 
 
 class AvailabilityStatus(models.TextChoices):
@@ -162,6 +164,24 @@ class Product(TimeStampedModel):
 
     availability_status = models.CharField(
         max_length=10, choices=AvailabilityStatus.choices, default=AvailabilityStatus.UNKNOWN
+    )
+
+    # Optional confirmed price. Only when set does the page show a price and
+    # publish Offer structured data (which can make it eligible for Google
+    # product rich results). Never enter an estimate here.
+    price = models.DecimalField(
+        max_digits=12, decimal_places=2, null=True, blank=True,
+        help_text="Confirmed selling price (leave blank for quote-only).",
+    )
+    price_currency = models.CharField(max_length=3, default="KES")
+    price_unit = models.CharField(max_length=60, blank=True, help_text="e.g. 'per brick', 'per 25 kg bag'.")
+    price_valid_until = models.DateField(
+        null=True, blank=True, help_text="Date after which the price must be reconfirmed."
+    )
+    faqs = models.TextField(
+        blank=True,
+        help_text="Frequently asked questions shown on the page (and marked up for search engines). "
+        "Write each as 'Q: question' on one line and 'A: answer' on the next; separate with a blank line.",
     )
 
     related_products = models.ManyToManyField("self", blank=True, symmetrical=True)
@@ -304,6 +324,46 @@ class ProductDocument(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Service(TimeStampedModel):
+    """A service the division offers (e.g. pizza oven building). Describe
+    only what is actually offered — no prices, timelines or guarantees
+    unless confirmed."""
+
+    name = models.CharField(max_length=120, unique=True)
+    slug = models.SlugField(max_length=140, unique=True, blank=True, help_text="Public URL: /services/<slug>.")
+    summary = models.CharField(max_length=240, blank=True)
+    description = models.TextField(blank=True, help_text="Blank lines separate paragraphs.")
+    includes = models.TextField(blank=True, help_text="One item per line: what the service covers.")
+    request_checklist = models.TextField(
+        blank=True, help_text="One item per line: what the customer should tell us when requesting it."
+    )
+    related_products = models.ManyToManyField(Product, blank=True, related_name="services")
+    faqs = models.TextField(
+        blank=True,
+        help_text="Frequently asked questions shown on the page (and marked up for search engines). "
+        "Write each as 'Q: question' on one line and 'A: answer' on the next; separate with a blank line.",
+    )
+    image = models.ImageField(upload_to="services/", blank=True, null=True, validators=IMAGE_VALIDATORS)
+    image_alt = models.CharField(max_length=200, blank=True)
+    seo_title = models.CharField(max_length=160, blank=True)
+    seo_description = models.CharField(max_length=320, blank=True)
+    order = models.PositiveIntegerField(default=0)
+    status = models.CharField(max_length=10, choices=PublishStatus.choices, default=PublishStatus.DRAFT)
+    review_notes = models.TextField(blank=True, help_text="Internal only — never shown publicly.")
+
+    class Meta:
+        ordering = ["order", "name"]
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        optimise_image_field(self.image)
+        super().save(*args, **kwargs)
 
 
 class Redirect(TimeStampedModel):

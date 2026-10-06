@@ -12,6 +12,7 @@ from .models import (
     ProductVariant,
     PublishStatus,
     Redirect,
+    Service,
 )
 
 
@@ -81,7 +82,13 @@ class ProductAdmin(admin.ModelAdmin):
             "fields": ("primary_category", "additional_categories", "applications"),
         }),
         ("Content", {
-            "fields": ("short_summary", "description", "selection_notes"),
+            "fields": ("short_summary", "description", "selection_notes", "faqs"),
+        }),
+        ("Price (optional - confirmed prices only)", {
+            "fields": ("price", "price_currency", "price_unit", "price_valid_until"),
+            "description": "Leave blank for quote-only products. A confirmed price is shown on the page and "
+            "published as an Offer in structured data, which can make the product eligible for Google "
+            "product rich results.",
         }),
         ("Commercial (confirmed facts only)", {
             "fields": (
@@ -92,7 +99,7 @@ class ProductAdmin(admin.ModelAdmin):
         ("SEO", {"fields": ("seo_title", "seo_description")}),
         ("Review / internal (never shown publicly)", {"fields": ("review_notes", "source_url")}),
     )
-    actions = ["make_published", "make_draft"]
+    actions = ["make_published", "make_draft", "make_archived"]
 
     def get_queryset(self, request):
         return super().get_queryset(request).select_related("primary_category").prefetch_related("images")
@@ -124,6 +131,7 @@ class ProductAdmin(admin.ModelAdmin):
         if not self._can_publish(request):
             actions.pop("make_published", None)
             actions.pop("make_draft", None)
+            actions.pop("make_archived", None)
         return actions
 
     def _set_status(self, request, queryset, status):
@@ -141,6 +149,10 @@ class ProductAdmin(admin.ModelAdmin):
     @admin.action(description="Move selected products back to draft", permissions=["publish"])
     def make_draft(self, request, queryset):
         self._set_status(request, queryset, PublishStatus.DRAFT)
+
+    @admin.action(description="Hide selected products (outside current focus)", permissions=["publish"])
+    def make_archived(self, request, queryset):
+        self._set_status(request, queryset, PublishStatus.ARCHIVED)
 
     def has_publish_permission(self, request):
         return self._can_publish(request)
@@ -180,3 +192,20 @@ class ApplicationAdmin(admin.ModelAdmin):
 class RedirectAdmin(admin.ModelAdmin):
     list_display = ("old_path", "new_path", "updated_at")
     search_fields = ("old_path", "new_path")
+
+
+@admin.register(Service)
+class ServiceAdmin(admin.ModelAdmin):
+    list_display = ("name", "status", "order", "updated_at")
+    list_editable = ("order",)
+    list_filter = ("status",)
+    prepopulated_fields = {"slug": ("name",)}
+    search_fields = ("name", "summary", "description")
+    filter_horizontal = ("related_products",)
+    fields = (
+        "name", "slug", "status", "order", "summary", "description", "includes", "request_checklist",
+        "faqs", "related_products", "image", "image_alt", "seo_title", "seo_description", "review_notes",
+    )
+
+    def view_on_site(self, obj):
+        return public_url(f"/services/{obj.slug}") if obj.status == PublishStatus.PUBLISHED else None

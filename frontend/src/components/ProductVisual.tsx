@@ -1,17 +1,20 @@
 import Image from "next/image";
 
+import type { IllustrativeImage } from "@/lib/images";
 import type { ProductImage } from "@/lib/types";
 
-/** Product photograph, or a neutral placeholder when no photo has been
- * uploaded yet. The placeholder is clearly not a product photo. */
+/** Uploaded product photograph; otherwise a clearly labelled illustrative
+ * stock photo; otherwise a neutral placeholder. */
 export function ProductVisual({
   image,
+  fallback,
   label,
   sizes,
   preload = false,
   className = "",
 }: {
   image: ProductImage | null | undefined;
+  fallback?: IllustrativeImage;
   label: string;
   sizes: string;
   preload?: boolean;
@@ -20,14 +23,25 @@ export function ProductVisual({
   if (image?.image) {
     return (
       <div className={`relative aspect-[4/3] overflow-hidden bg-mist ${className}`}>
+        <Image src={image.image} alt={image.alt_text} fill sizes={sizes} preload={preload} className="object-cover" />
+      </div>
+    );
+  }
+  if (fallback) {
+    return (
+      <div className={`relative aspect-[4/3] overflow-hidden bg-mist ${className}`}>
         <Image
-          src={image.image}
-          alt={image.alt_text}
+          src={fallback.src}
+          alt={fallback.alt}
           fill
           sizes={sizes}
           preload={preload}
+          placeholder="blur"
           className="object-cover"
         />
+        <span className="absolute bottom-2 left-2 rounded bg-navy/85 px-2 py-0.5 text-[0.7rem] font-semibold uppercase tracking-wide text-white">
+          Illustrative photo
+        </span>
       </div>
     );
   }

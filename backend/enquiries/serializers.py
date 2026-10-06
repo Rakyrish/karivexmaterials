@@ -4,7 +4,7 @@ from decimal import Decimal
 from django.conf import settings
 from rest_framework import serializers
 
-from catalog.models import Product, PublishStatus
+from catalog.models import Product, PublishStatus, Service
 
 from .models import Enquiry, EnquiryItem, EnquiryKind
 
@@ -24,6 +24,7 @@ class EnquiryItemInputSerializer(serializers.Serializer):
 
 class EnquiryCreateSerializer(serializers.Serializer):
     kind = serializers.ChoiceField(choices=EnquiryKind.choices, default=EnquiryKind.QUOTE)
+    service_slug = serializers.SlugField(max_length=140, required=False, allow_blank=True)
     name = serializers.CharField(max_length=120)
     company = serializers.CharField(max_length=160, required=False, allow_blank=True)
     email = serializers.EmailField(max_length=254)
@@ -61,6 +62,14 @@ class EnquiryCreateSerializer(serializers.Serializer):
             raise serializers.ValidationError({"items": "Add at least one product to the quote basket."})
         if kind == EnquiryKind.CONTACT and not attrs.get("project_notes", "").strip():
             raise serializers.ValidationError({"project_notes": "Please tell us what you need."})
+        attrs["service"] = None
+        if kind == EnquiryKind.SERVICE:
+            service = Service.objects.filter(
+                slug=attrs.get("service_slug") or "", status=PublishStatus.PUBLISHED
+            ).first()
+            if service is None:
+                raise serializers.ValidationError({"service_slug": "Choose a service."})
+            attrs["service"] = service
 
         resolved = []
         errors = {}
@@ -95,6 +104,9 @@ class EnquiryCreateSerializer(serializers.Serializer):
         items = validated_data.pop("resolved_items")
         validated_data.pop("items", None)
         validated_data.pop("website", None)
+        validated_data.pop("service_slug", None)
+        if validated_data.get("service"):
+            validated_data["service_name_snapshot"] = validated_data["service"].name
         validated_data["idempotency_key"] = validated_data.pop("idempotency_key", "") or None
 
         enquiry = Enquiry.objects.create(**validated_data)
@@ -139,4 +151,4 @@ class EnquiryConfirmationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Enquiry
-        fields = ["reference_number", "kind", "created_at", "items"]
+        fields = ["reference_number", "kind", "service_name_snapshot", "created_at", "items"]

@@ -34,3 +34,20 @@ the Dockerfiles and production compose file were written but **not built or run*
 * Text contrast was chosen against WCAG ratios by calculation (navy #021533 on orange #FC7701 ≈ 6.5:1;
   white on WhatsApp green #1f7a43 ≈ 5.6:1; white text is never placed on orange). A full
   assistive-technology audit has not been done.
+
+## Pizza-focus update, 6 October 2026 (later the same day)
+
+| Check | Result |
+| --- | --- |
+| Backend `manage.py test` (44 tests: pizza focus and hidden products, services API, service requests, FAQ parsing, Offer only with a confirmed price, phone swap) | Pass |
+| Migrations + `seed_catalog --update --reset-status` on the local database; re-run creates nothing | Pass: 10 published pizza products, 1 draft, 26 hidden; 4 categories; 4 services |
+| `npm run lint`, `next build` | Pass |
+| `scripts/smoke_check.py`: 10 product pages, 4 service pages (Service + FAQPage JSON-LD), guide, credits, canonicals, hidden products 404, sitemap = 32 published URLs, floating contact buttons, no Offer without a price | Pass |
+| `scripts/e2e_check.py` (quote via Next, idempotency, local mail capture, admin edit refresh, media) | Pass |
+| Browser flow (headless Chrome): product WhatsApp link, floating WhatsApp/call (0742 355548)/email, FAQ accordion, basket, quote submit, service request confirmation | Pass |
+| Visual: desktop 1280/1440 and 390 px mobile of home (new hero), product, service and guide pages; no horizontal overflow | Inspected |
+
+Bug found and fixed: Next's data cache kept serving a previously cached 200 for a product after
+the API started returning 404 (hidden), until on-demand revalidation ran. Single-record lookups
+(product, category, application, service, redirect) are now fetched uncached; list data stays
+cached and tag-revalidated.
