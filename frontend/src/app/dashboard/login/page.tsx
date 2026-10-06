@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState, useSyncExternalStore } from "react";
 
 import { useDashboard } from "@/components/dashboard/DashboardProvider";
 import { Notice, inputClass } from "@/components/dashboard/ui";
@@ -15,7 +15,12 @@ function safeNext(value: string | null) {
   return value && /^\/dashboard(\/[\w\-/]*)?$/.test(value) && value !== "/dashboard/login" ? value : "/dashboard";
 }
 
+const noSubscribe = () => () => {};
+
 function LoginForm() {
+  // False during server render and before hydration: the button stays
+  // disabled until JavaScript handles the submit.
+  const hydrated = useSyncExternalStore(noSubscribe, () => true, () => false);
   const { session, setSession } = useDashboard();
   const router = useRouter();
   const next = safeNext(useSearchParams().get("next"));
@@ -45,7 +50,9 @@ function LoginForm() {
   }
 
   return (
-    <form onSubmit={submit} className="mt-8 space-y-4">
+    // method="post": a submit that somehow happens without JavaScript must
+    // never put the password in the URL (history, logs).
+    <form method="post" onSubmit={submit} className="mt-8 space-y-4">
       {error && <Notice tone="error">{error}</Notice>}
       <div>
         <label htmlFor="username" className="block text-sm font-semibold text-navy">
@@ -61,7 +68,7 @@ function LoginForm() {
       </div>
       <button
         type="submit"
-        disabled={busy}
+        disabled={busy || !hydrated}
         className="min-h-12 w-full rounded-lg bg-orange font-bold text-navy hover:bg-orange-600 disabled:opacity-60"
       >
         {busy ? "Signing in…" : "Sign in"}

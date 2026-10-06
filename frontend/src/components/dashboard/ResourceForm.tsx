@@ -79,6 +79,26 @@ export function ResourceForm({
     );
   }, [isNew, recordPath]);
 
+  /** Reload after a side panel (photos, sizes, specs) saves, keeping any
+   * fields the user is still editing in the main form. */
+  const refresh = () => {
+    const previous = record;
+    api<Values>(recordPath).then(
+      (data) => {
+        setRecord(data);
+        setValues((current) =>
+          Object.fromEntries(
+            Object.keys(data).map((key) => [
+              key,
+              previous && JSON.stringify(current[key]) !== JSON.stringify(previous[key]) ? current[key] : data[key],
+            ]),
+          ),
+        );
+      },
+      (err: Error) => setLoadError(err.message),
+    );
+  };
+
   useEffect(load, [load]);
 
   const dirty =
@@ -171,7 +191,7 @@ export function ResourceForm({
         {!canEdit && <Notice>You can view this but your account can&apos;t change it.</Notice>}
         {message && <Notice tone={message.tone}>{message.text}</Notice>}
 
-        {extrasFirst && !isNew && children?.(record, load)}
+        {extrasFirst && !isNew && children?.(record, refresh)}
 
         <form
           className="space-y-6"
@@ -218,7 +238,7 @@ export function ResourceForm({
           )}
         </form>
 
-        {!extrasFirst && !isNew && children?.(record, load)}
+        {!extrasFirst && !isNew && children?.(record, refresh)}
 
         {confirmDelete && (
           <div role="alertdialog" aria-modal="true" aria-labelledby="confirm-delete" className="fixed inset-0 z-50 flex items-center justify-center bg-navy/50 p-4">

@@ -21,6 +21,8 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
+  // The dev-only badge sat over the dashboard's "Sign out" link.
+  devIndicators: false,
   images: {
     // Uploaded media is served by Django under /media (proxied below in
     // development; routed by the reverse proxy in production).
