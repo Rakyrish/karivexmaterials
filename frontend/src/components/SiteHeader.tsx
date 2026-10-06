@@ -8,7 +8,7 @@ import type { SiteSettings } from "@/lib/types";
 
 import { BasketLink } from "./BasketLink";
 import { ContactLink } from "./ContactLink";
-import { ClockIcon, MailIcon, PhoneIcon, SearchIcon, WhatsAppIcon } from "./Icons";
+import { ClockIcon, MailIcon, PhoneIcon, WhatsAppIcon } from "./Icons";
 import { MobileMenu } from "./MobileMenu";
 
 export const NAV_LINKS = [
@@ -68,11 +68,11 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
         </div>
       </div>
 
-      <div className="on-light bg-paper/95 backdrop-blur supports-[backdrop-filter]:bg-paper/90">
+      <div className="on-light bg-paper">
         <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-2 sm:px-6">
           <Link
             href="/"
-            className="flex min-w-0 items-center gap-2 sm:gap-3"
+            className="flex min-w-0 items-center gap-2 sm:gap-3 xl:shrink-0"
             aria-label={`${settings.site_name} — home`}
           >
             {settings.logo_header_override ? (
@@ -111,24 +111,6 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
               ))}
             </ul>
           </nav>
-
-          <form action="/products" role="search" className="ml-2 hidden 2xl:block">
-            <label htmlFor="header-search" className="sr-only">
-              Search materials
-            </label>
-            <div className="flex items-center rounded-md border border-line bg-white focus-within:border-navy">
-              <input
-                id="header-search"
-                name="q"
-                type="search"
-                placeholder="Search materials"
-                className="w-44 bg-transparent px-3 py-2 text-sm outline-none"
-              />
-              <button type="submit" className="px-3 py-2 text-navy" aria-label="Search">
-                <SearchIcon />
-              </button>
-            </div>
-          </form>
 
           <div className="ml-auto flex shrink-0 items-center gap-2 xl:ml-2">
             <BasketLink />
