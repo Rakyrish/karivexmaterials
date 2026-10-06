@@ -32,7 +32,7 @@ const EMBERS = [
 const ROTATING: [string, string][] = [
   ["build", "pizza ovens."],
   ["repair & reline", "pizza ovens."],
-  ["supply", "roof cyclones."],
+  ["supply & install", "roof cyclones."],
   ["repair", "roof cyclones."],
   ["deliver", "to your site."],
 ];
@@ -54,7 +54,8 @@ const TICKER = [
   "Perlite",
   "Door seal rope",
   "High-temperature sealants",
-  "Roof cyclones",
+  "600 mm stainless steel roof cyclones",
+  "Cyclone installation",
   "Cyclone repair",
   "Oven building",
   "Repair & relining",

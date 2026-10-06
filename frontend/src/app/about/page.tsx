@@ -25,8 +25,8 @@ export default async function AboutPage() {
         <p>
           {settings.site_name} is the {settings.division_descriptor} of {settings.parent_company_name}. It is a
           division of the company, not a separately registered business. Our focus is pizza ovens — the materials that
-          go into them, and building, repairing and delivering for them — and roof cyclones, which we supply and
-          repair.
+          go into them, and building, repairing and delivering for them — and roof cyclones, which we supply, install
+          and repair.
         </p>
       </PageHero>
       <Container className="grid gap-12 py-12 lg:grid-cols-[1.5fr_1fr]">

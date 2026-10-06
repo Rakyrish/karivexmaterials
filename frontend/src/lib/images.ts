@@ -64,6 +64,7 @@ const SERVICE_IMAGES: Record<string, string> = {
   "pizza-oven-repair-relining": "pizzeria-brick-oven",
   "pizza-oven-material-advice": "fire-brick",
   "roof-cyclone-repair": "roof-cyclone-vanes",
+  "roof-cyclone-installation": "industrial-roof-cyclones",
 };
 
 const APPLICATION_IMAGES: Record<string, string> = {

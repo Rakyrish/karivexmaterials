@@ -74,12 +74,17 @@ move to 0742 355548 too. Floating call, WhatsApp and email buttons appear on eve
 
 ## Roof cyclones (added 6 October 2026)
 
-At the owner's request the site also sells and repairs **roof cyclones** (turbine roof ventilators,
-"whirlybirds"):
+At the owner's request the site also covers **roof cyclones** (turbine roof ventilators,
+"whirlybirds"). Confirmed by the owner: stock is **600 mm stainless steel** cyclones, and the
+business **supplies, installs and repairs** them.
 
 * Category `/categories/roof-cyclones`; product `/products/roof-ventilators-roof-cyclones` (the
   original catalogue item, now published with new copy, search text and FAQs).
-* Service `/services/roof-cyclone-repair` (bearings, heads, base reseals, supply of replacements).
+* Services `/services/roof-cyclone-installation` (supply and fitting, base matched to the roof
+  profile and sealed) and `/services/roof-cyclone-repair` (bearings, heads, base reseals, new
+  cyclone fitted where needed).
+* Product specifications: throat diameter 600 mm, stainless steel, wind-driven; one option
+  "600 mm stainless steel".
 * Project page `/applications/roof-ventilation`; guide `/roof-cyclone-guide` (Article + FAQ markup,
   references linked inline); guides index `/guides`.
 * Homepage: cyclone section with photos, a "Roof cyclones" hero tag and ticker items; the hero's
@@ -88,8 +93,7 @@ At the owner's request the site also sells and repairs **roof cyclones** (turbin
   These were the only freely licensed roof-cyclone photos on Commons. Upload your own in the admin.
 * Content source: `backend/catalog/seed_cyclones.py`.
 
-Not published until confirmed: the cyclone sizes, materials and base types you stock, prices, and
-whether new installations (as opposed to repairs) are offered.
+Not published until confirmed: base types, prices, and the installation/repair service area.
 
 ## Animated hero
 

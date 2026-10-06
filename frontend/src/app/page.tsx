@@ -13,7 +13,7 @@ import { IMAGES, applicationImage, categoryImage, serviceImage } from "@/lib/ima
 import { pageMetadata } from "@/lib/seo";
 
 const DEFAULT_INTRO =
-  "Fire bricks, refractory cement and mortar, castable, ceramic fibre insulation, vermiculite, perlite and door seals for pizza ovens, plus oven building, repair and relining — and roof cyclones, supplied and repaired. Delivered from Nairobi.";
+  "Fire bricks, refractory cement and mortar, castable, ceramic fibre insulation, vermiculite, perlite and door seals for pizza ovens, plus oven building, repair and relining — and stainless steel roof cyclones, supplied, installed and repaired. Delivered from Nairobi.";
 
 export async function generateMetadata() {
   const settings = await loadSettings();
@@ -99,10 +99,10 @@ export default async function HomePage() {
               Our services
             </h2>
             <p className="mt-2 max-w-2xl text-white/85">
-              We don&apos;t only supply the materials — we build and repair pizza ovens, repair roof cyclones, help you
-              plan your project and deliver to your site.
+              We don&apos;t only supply the materials — we build and repair pizza ovens, install and repair roof
+              cyclones, help you plan your project and deliver to your site.
             </p>
-            <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+            <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {services.map((service) => {
                 const img = serviceImage(service.slug);
                 return (
@@ -167,15 +167,15 @@ export default async function HomePage() {
             <span aria-hidden="true" className="block h-1 w-12 rounded bg-orange" />
             <p className="mt-3 text-sm font-bold uppercase tracking-wider text-orange-600">Roof cyclones</p>
             <h2 id="cyclones-title" className="mt-1 font-display text-3xl font-extrabold text-navy sm:text-4xl">
-              Roof cyclones — supplied and repaired
+              Roof cyclones — supplied, installed and repaired
             </h2>
             <p className="mt-3 text-lg text-slate">
               Wind-driven roof cyclones (turbine ventilators) pull hot, stale and humid air out of factories, warehouses,
-              schools and homes with no electricity. We supply new cyclones and repair noisy, wobbling, stuck or leaking
-              ones.
+              schools and homes with no electricity. We stock 600 mm stainless steel cyclones, install them, and repair
+              noisy, wobbling, stuck or leaking ones.
             </p>
             <ul className="mt-5 grid gap-2 sm:grid-cols-2">
-              {["No electricity or running cost", "For factories, warehouses & homes", "Bearing & head repairs", "Leaking bases resealed"].map(
+              {["600 mm stainless steel", "No electricity or running cost", "Supply & installation", "Repairs & leaking bases resealed"].map(
                 (item) => (
                   <li key={item} className="flex items-center gap-2 text-ink">
                     <CheckIcon className="shrink-0 text-orange-600" /> {item}
@@ -191,10 +191,16 @@ export default async function HomePage() {
                 Buy roof cyclones <ArrowRightIcon />
               </Link>
               <Link
+                href="/services/roof-cyclone-installation"
+                className="inline-flex min-h-12 items-center rounded-full border-2 border-navy px-6 font-bold text-navy hover:bg-navy hover:text-white"
+              >
+                Installation
+              </Link>
+              <Link
                 href="/services/roof-cyclone-repair"
                 className="inline-flex min-h-12 items-center rounded-full border-2 border-navy px-6 font-bold text-navy hover:bg-navy hover:text-white"
               >
-                Cyclone repair
+                Repair
               </Link>
               <Link href="/roof-cyclone-guide" className="inline-flex min-h-12 items-center gap-1 px-2 font-semibold text-navy underline">
                 Read the cyclone guide

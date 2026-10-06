@@ -69,7 +69,7 @@ class SeedTests(SeededCatalogTestCase):
             set(Category.objects.filter(status="published").values_list("short_code", flat=True)),
             {"OF", "OD", "OI", "OS", "RC"},
         )
-        self.assertEqual(Service.objects.filter(status="published").count(), 5)
+        self.assertEqual(Service.objects.filter(status="published").count(), 6)
         self.assertEqual(
             Product.objects.get(slug="roof-ventilators-roof-cyclones").status, PublishStatus.PUBLISHED
         )
@@ -170,7 +170,7 @@ class ServiceApiTests(SeededCatalogTestCase):
         self.assertEqual(
             [s["slug"] for s in services],
             ["pizza-oven-building", "pizza-oven-repair-relining", "pizza-oven-material-advice",
-             "delivery-of-materials", "roof-cyclone-repair"],
+             "delivery-of-materials", "roof-cyclone-installation", "roof-cyclone-repair"],
         )
         detail = self.client.get("/api/v1/services/pizza-oven-building/").json()
         self.assertTrue(detail["includes"])

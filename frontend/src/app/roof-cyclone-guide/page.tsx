@@ -164,15 +164,16 @@ export default function RoofCycloneGuidePage() {
             <div className="prose-copy mt-4 space-y-4 text-lg text-ink">
               <p>
                 <strong>Size.</strong> Cyclones are sized by their throat diameter; in Kenya 500 mm and 600 mm throats are
-                common for commercial roofs. Larger buildings usually need several cyclones rather than one big one.
+                common for commercial roofs. We stock 600 mm cyclones. Larger buildings usually need several cyclones
+                rather than one big one.
               </p>
               <p>
                 <strong>Number and spacing.</strong> The number depends on the building&apos;s volume and use. Cyclones are
                 usually placed high on the roof, near the ridge, and spread out evenly so the whole space is ventilated.
               </p>
               <p>
-                <strong>Material.</strong> Cyclones are made in aluminium, stainless steel or galvanised steel. Ask us
-                which suits your site and budget.
+                <strong>Material.</strong> Cyclones are made in aluminium, stainless steel or galvanised steel.
+                Stainless steel, which we stock, resists rust and weathering on exposed roofs.
               </p>
               <p>
                 <strong>Base.</strong> The base must match the roof sheet profile and pitch, and be sealed properly to keep
@@ -234,14 +235,19 @@ export default function RoofCycloneGuidePage() {
             <figcaption className="p-3 text-xs text-slate">Worn, dirty vanes and the top bearing (illustrative photo).</figcaption>
           </figure>
           <div className="rounded-2xl bg-navy p-6 text-white lg:sticky lg:top-40">
-            <h2 className="font-display text-xl font-bold">Need cyclones or a repair?</h2>
-            <p className="mt-2 text-white/85">We supply roof cyclones and repair noisy, stuck or leaking ones.</p>
+            <h2 className="font-display text-xl font-bold">Need cyclones fitted or fixed?</h2>
+            <p className="mt-2 text-white/85">
+              We stock 600 mm stainless steel roof cyclones, install them, and repair noisy, stuck or leaking ones.
+            </p>
             <div className="mt-4 flex flex-wrap gap-2">
               <Link href="/products/roof-ventilators-roof-cyclones" className="inline-flex min-h-11 items-center gap-1 rounded-md bg-orange px-4 font-semibold text-navy hover:bg-orange-600">
                 Buy roof cyclones <ArrowRightIcon />
               </Link>
+              <Link href="/services/roof-cyclone-installation" className="inline-flex min-h-11 items-center rounded-md border border-white px-4 font-semibold hover:bg-white hover:text-navy">
+                Installation
+              </Link>
               <Link href="/services/roof-cyclone-repair" className="inline-flex min-h-11 items-center rounded-md border border-white px-4 font-semibold hover:bg-white hover:text-navy">
-                Cyclone repair
+                Repair
               </Link>
             </div>
           </div>

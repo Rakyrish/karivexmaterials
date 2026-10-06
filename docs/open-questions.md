@@ -68,9 +68,8 @@ These pages are published with factual product-type descriptions; specific specs
 
 ## Roof cyclones: details to confirm
 
-* Throat sizes (e.g. 500 mm / 600 mm), materials (aluminium, stainless, galvanised) and base types stocked
-* Prices, if they are to be shown (this enables product rich results)
-* Repair service area, roof-access arrangements, and whether new installations are offered
+* Confirmed 2026-10-06: 600 mm stainless steel cyclones stocked; supply, installation and repair offered
+* Still open: base types, prices (to enable product rich results), service area and roof-access arrangements
 
 ## Missing assets and credentials
 
