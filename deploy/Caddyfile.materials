@@ -1,0 +1,27 @@
+# Caddy site block for materials.karivexsolutionsltd.com — use only if the
+# server's active reverse proxy is Caddy (inspect it first). Append/import
+# into the existing Caddyfile; do not run a second Caddy on 80/443.
+#
+#   caddy validate --config /etc/caddy/Caddyfile && caddy reload --config /etc/caddy/Caddyfile
+#   rollback: remove this block (or the import line), validate, reload.
+#
+# If the DNS record is Cloudflare-proxied, add to the GLOBAL options block:
+#   servers { trusted_proxies static <Cloudflare IPv4/IPv6 ranges> ; client_ip_headers CF-Connecting-IP }
+# Caddy otherwise replaces X-Forwarded-For with the connecting IP, which
+# is what Django's TRUST_X_FORWARDED_FOR expects.
+
+materials.karivexsolutionsltd.com {
+	encode zstd gzip
+	request_body {
+		max_size 20MB
+	}
+
+	@django path /admin/* /static/* /media/* /healthz
+	handle @django {
+		reverse_proxy 127.0.0.1:8410
+	}
+
+	handle {
+		reverse_proxy 127.0.0.1:3410
+	}
+}

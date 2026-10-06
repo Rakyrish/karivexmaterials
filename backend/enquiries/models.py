@@ -1,13 +1,15 @@
-import random
+import secrets
 import string
-from datetime import date
 
 from django.db import models
+from django.utils import timezone
+
+REFERENCE_ALPHABET = "".join(c for c in string.ascii_uppercase + string.digits if c not in "O0I1")
 
 
 def generate_reference_number():
-    today = date.today().strftime("%Y%m%d")
-    suffix = "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    today = timezone.localdate().strftime("%Y%m%d")
+    suffix = "".join(secrets.choice(REFERENCE_ALPHABET) for _ in range(6))
     return f"KVM-{today}-{suffix}"
 
 
@@ -16,6 +18,11 @@ class EnquiryStatus(models.TextChoices):
     IN_PROGRESS = "in_progress", "In Progress"
     QUOTED = "quoted", "Quoted"
     CLOSED = "closed", "Closed"
+
+
+class EnquiryKind(models.TextChoices):
+    QUOTE = "quote", "Quotation request"
+    CONTACT = "contact", "General enquiry"
 
 
 class Enquiry(models.Model):
@@ -29,6 +36,7 @@ class Enquiry(models.Model):
         blank=True,
         help_text="Client-generated key preventing accidental double submission.",
     )
+    kind = models.CharField(max_length=10, choices=EnquiryKind.choices, default=EnquiryKind.QUOTE)
 
     name = models.CharField(max_length=120)
     company = models.CharField(max_length=160, blank=True)
@@ -40,9 +48,11 @@ class Enquiry(models.Model):
     status = models.CharField(
         max_length=12, choices=EnquiryStatus.choices, default=EnquiryStatus.NEW
     )
+    internal_notes = models.TextField(blank=True, help_text="Staff-only notes.")
 
     notification_sent = models.BooleanField(default=False)
     notification_error = models.TextField(blank=True)
+    notification_attempted_at = models.DateTimeField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -68,10 +78,11 @@ class EnquiryItem(models.Model):
     # Snapshots so later catalogue edits never change the historical request.
     product_name_snapshot = models.CharField(max_length=180)
     variant_label_snapshot = models.CharField(max_length=160, blank=True)
+    sku_snapshot = models.CharField(max_length=60, blank=True)
     category_snapshot = models.CharField(max_length=120, blank=True)
     product_url_snapshot = models.CharField(max_length=300, blank=True)
 
-    quantity = models.PositiveIntegerField(default=1)
+    quantity = models.DecimalField(max_digits=12, decimal_places=2, default=1)
     unit = models.CharField(max_length=60, blank=True)
     notes = models.CharField(max_length=300, blank=True)
 
@@ -79,4 +90,8 @@ class EnquiryItem(models.Model):
         ordering = ["id"]
 
     def __str__(self):
-        return f"{self.quantity} x {self.product_name_snapshot}"
+        return f"{self.quantity_display} x {self.product_name_snapshot}"
+
+    @property
+    def quantity_display(self):
+        return f"{self.quantity.normalize():f}"

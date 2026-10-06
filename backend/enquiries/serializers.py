@@ -1,83 +1,142 @@
+import re
+from decimal import Decimal
+
+from django.conf import settings
 from rest_framework import serializers
 
-from catalog.models import Product, ProductVariant
+from catalog.models import Product, PublishStatus
 
-from .models import Enquiry, EnquiryItem
+from .models import Enquiry, EnquiryItem, EnquiryKind
+
+MAX_ITEMS = 50
+PHONE_RE = re.compile(r"^\+?[0-9 ()\-]{7,20}$")
 
 
 class EnquiryItemInputSerializer(serializers.Serializer):
-    product_slug = serializers.SlugField()
+    product_slug = serializers.SlugField(max_length=160)
     variant_id = serializers.IntegerField(required=False, allow_null=True)
-    quantity = serializers.IntegerField(min_value=1, default=1)
+    quantity = serializers.DecimalField(
+        max_digits=12, decimal_places=2, min_value=Decimal("0.01"), default=Decimal("1")
+    )
     unit = serializers.CharField(required=False, allow_blank=True, max_length=60)
     notes = serializers.CharField(required=False, allow_blank=True, max_length=300)
-    product_url = serializers.CharField(required=False, allow_blank=True, max_length=300)
 
 
 class EnquiryCreateSerializer(serializers.Serializer):
+    kind = serializers.ChoiceField(choices=EnquiryKind.choices, default=EnquiryKind.QUOTE)
     name = serializers.CharField(max_length=120)
     company = serializers.CharField(max_length=160, required=False, allow_blank=True)
-    email = serializers.EmailField()
+    email = serializers.EmailField(max_length=254)
     phone = serializers.CharField(max_length=40, required=False, allow_blank=True)
     delivery_location = serializers.CharField(max_length=200, required=False, allow_blank=True)
-    project_notes = serializers.CharField(required=False, allow_blank=True)
-    idempotency_key = serializers.CharField(max_length=64, required=False, allow_blank=True)
-    items = EnquiryItemInputSerializer(many=True)
+    project_notes = serializers.CharField(max_length=5000, required=False, allow_blank=True)
+    idempotency_key = serializers.RegexField(
+        r"^[A-Za-z0-9_-]{8,64}$", required=False, allow_blank=True
+    )
+    # Honeypot: real visitors never see or fill this field.
+    website = serializers.CharField(required=False, allow_blank=True, max_length=200)
+    items = EnquiryItemInputSerializer(many=True, required=False, default=list)
+
+    def validate_name(self, value):
+        value = value.strip()
+        if not value:
+            raise serializers.ValidationError("Please enter your name.")
+        return value
+
+    def validate_phone(self, value):
+        value = value.strip()
+        if value and not PHONE_RE.match(value):
+            raise serializers.ValidationError("Enter a valid phone number, e.g. +254 7XX XXX XXX.")
+        return value
 
     def validate_items(self, items):
-        if not items:
-            raise serializers.ValidationError("Add at least one product to the quote basket.")
+        if len(items) > MAX_ITEMS:
+            raise serializers.ValidationError(f"A single request can include up to {MAX_ITEMS} lines.")
         return items
 
-    def create(self, validated_data):
-        items_data = validated_data.pop("items")
-        idempotency_key = validated_data.pop("idempotency_key", "") or None
+    def validate(self, attrs):
+        kind = attrs.get("kind", EnquiryKind.QUOTE)
+        items = attrs.get("items") or []
+        if kind == EnquiryKind.QUOTE and not items:
+            raise serializers.ValidationError({"items": "Add at least one product to the quote basket."})
+        if kind == EnquiryKind.CONTACT and not attrs.get("project_notes", "").strip():
+            raise serializers.ValidationError({"project_notes": "Please tell us what you need."})
 
-        if idempotency_key:
-            existing = Enquiry.objects.filter(idempotency_key=idempotency_key).first()
-            if existing:
-                return existing, False
-
-        enquiry = Enquiry.objects.create(idempotency_key=idempotency_key, **validated_data)
-
-        for item in items_data:
-            product = Product.objects.filter(
-                slug=item["product_slug"], status="published"
-            ).first()
+        resolved = []
+        errors = {}
+        slugs = {item["product_slug"] for item in items}
+        products = {
+            p.slug: p
+            for p in Product.objects.filter(slug__in=slugs, status=PublishStatus.PUBLISHED)
+            .select_related("primary_category")
+            .prefetch_related("variants")
+        }
+        for index, item in enumerate(items):
+            product = products.get(item["product_slug"])
+            if product is None:
+                errors[index] = "This product is no longer available. Remove it and try again."
+                continue
             variant = None
-            if product and item.get("variant_id"):
-                variant = product.variants.filter(id=item["variant_id"]).first()
+            if item.get("variant_id"):
+                variant = next(
+                    (v for v in product.variants.all() if v.id == item["variant_id"] and v.is_active),
+                    None,
+                )
+                if variant is None:
+                    errors[index] = "The selected option is no longer available for this product."
+                    continue
+            resolved.append({**item, "product": product, "variant": variant})
+        if errors:
+            raise serializers.ValidationError({"items": errors})
+        attrs["resolved_items"] = resolved
+        return attrs
 
-            EnquiryItem.objects.create(
+    def create(self, validated_data):
+        items = validated_data.pop("resolved_items")
+        validated_data.pop("items", None)
+        validated_data.pop("website", None)
+        validated_data["idempotency_key"] = validated_data.pop("idempotency_key", "") or None
+
+        enquiry = Enquiry.objects.create(**validated_data)
+        origin = settings.SITE_PRODUCTION_ORIGIN
+        EnquiryItem.objects.bulk_create([
+            EnquiryItem(
                 enquiry=enquiry,
-                product=product,
-                variant=variant,
-                product_name_snapshot=product.name if product else item["product_slug"],
-                variant_label_snapshot=variant.label if variant else "",
-                category_snapshot=product.primary_category.name if product else "",
-                product_url_snapshot=item.get("product_url", ""),
-                quantity=item.get("quantity", 1),
-                unit=item.get("unit", "") or (product.sales_unit if product else ""),
-                notes=item.get("notes", ""),
+                product=item["product"],
+                variant=item["variant"],
+                product_name_snapshot=item["product"].name,
+                variant_label_snapshot=item["variant"].label if item["variant"] else "",
+                sku_snapshot=(item["variant"].sku if item["variant"] else "") or item["product"].sku,
+                category_snapshot=item["product"].primary_category.name,
+                product_url_snapshot=f"{origin}{item['product'].public_path}",
+                quantity=item["quantity"],
+                unit=(item.get("unit") or "").strip()
+                or (item["variant"].sales_unit_override if item["variant"] else "")
+                or item["product"].sales_unit,
+                notes=(item.get("notes") or "").strip(),
             )
-        return enquiry, True
+            for item in items
+        ])
+        return enquiry
 
 
 class EnquiryItemSerializer(serializers.ModelSerializer):
+    quantity = serializers.SerializerMethodField()
+
     class Meta:
         model = EnquiryItem
-        fields = [
-            "product_name_snapshot", "variant_label_snapshot", "category_snapshot",
-            "quantity", "unit", "notes",
-        ]
+        fields = ["product_name_snapshot", "variant_label_snapshot", "quantity", "unit", "notes"]
+
+    def get_quantity(self, obj):
+        return obj.quantity_display
 
 
-class EnquiryReadSerializer(serializers.ModelSerializer):
+class EnquiryConfirmationSerializer(serializers.ModelSerializer):
+    """What the submitter sees after sending. Deliberately excludes contact
+    details and internal notification status."""
+
     items = EnquiryItemSerializer(many=True, read_only=True)
 
     class Meta:
         model = Enquiry
-        fields = [
-            "reference_number", "name", "company", "email", "phone",
-            "delivery_location", "project_notes", "status", "created_at", "items",
-        ]
+        fields = ["reference_number", "kind", "created_at", "items"]

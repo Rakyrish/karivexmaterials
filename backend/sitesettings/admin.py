@@ -19,11 +19,13 @@ class SiteSettingsAdmin(admin.ModelAdmin):
             "fields": (
                 "primary_phone", "secondary_phone", "whatsapp_number_intl", "email",
                 "address_line", "hours_text", "regions_served",
-                "contact_source_url", "contact_verified_on",
+                "contact_source_url", "contact_verified_on", "contact_form_enabled",
             ),
         }),
-        ("SEO / technical", {
-            "fields": ("production_origin", "ga_measurement_id"),
+        ("Analytics", {
+            "fields": ("ga_measurement_id",),
+            "description": "Optional Google Analytics 4 measurement ID. The public origin and "
+            "canonical URLs come from the SITE_PRODUCTION_ORIGIN environment variable.",
         }),
         ("Homepage copy", {
             "fields": ("homepage_headline", "homepage_intro"),

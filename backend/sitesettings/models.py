@@ -1,6 +1,8 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 
+from catalog.uploads import validate_image_extension, validate_image_upload
+
 
 class SiteSettings(models.Model):
     """Singleton: all editable, business-identity and contact facts live here
@@ -14,11 +16,17 @@ class SiteSettings(models.Model):
     )
     tagline = models.CharField(max_length=120, default="Strength Behind Every Project")
 
-    chemical_division_name = models.CharField(max_length=120, default="KariVex Chemical Division")
+    chemical_division_name = models.CharField(
+        max_length=120, default="KariVex Solutions Ltd — Chemical Division"
+    )
     chemical_division_url = models.URLField(default="https://karivexsolutionsltd.com/")
 
-    primary_phone = models.CharField(max_length=30, default="+254 742 355548")
-    secondary_phone = models.CharField(max_length=30, blank=True, default="+254 710 851911")
+    primary_phone = models.CharField(
+        max_length=30, default="+254 710 851911", help_text="Main sales line, as displayed."
+    )
+    secondary_phone = models.CharField(
+        max_length=30, blank=True, default="+254 742 355548", help_text="Alternative sales line."
+    )
     whatsapp_number_intl = models.CharField(
         max_length=20,
         default="254710851911",
@@ -42,6 +50,9 @@ class SiteSettings(models.Model):
         help_text="Where these contact details were last verified.",
     )
     contact_verified_on = models.DateField(null=True, blank=True)
+    contact_form_enabled = models.BooleanField(
+        default=True, help_text="Untick to hide the website enquiry forms (call/email/WhatsApp stay)."
+    )
 
     production_origin = models.URLField(default="https://materials.karivexsolutionsltd.com")
     ga_measurement_id = models.CharField(
@@ -56,6 +67,7 @@ class SiteSettings(models.Model):
 
     logo_header_override = models.ImageField(
         upload_to="branding/", blank=True, null=True,
+        validators=[validate_image_extension, validate_image_upload],
         help_text="Optional replacement for the bundled header logo derivative.",
     )
 
@@ -77,6 +89,10 @@ class SiteSettings(models.Model):
     def load(cls):
         obj, _ = cls.objects.get_or_create(pk=1)
         return obj
+
+    @staticmethod
+    def digits(value):
+        return "".join(ch for ch in value if ch.isdigit())
 
     def clean(self):
         if SiteSettings.objects.exclude(pk=self.pk).exists():
