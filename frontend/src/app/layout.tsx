@@ -25,10 +25,29 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_ORIGIN),
   title: {
     default: "KariVex Industrial Materials | Pizza Ovens & Roof Cyclones",
-    template: "%s | KariVex Industrial Materials",
+    template: "%s | KariVex",
   },
   applicationName: "KariVex Industrial Materials",
   robots: NOINDEX_ALL ? { index: false, follow: false } : undefined,
+  // Search Console / Bing Webmaster verification tokens (set in the environment).
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+    other: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+      ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION }
+      : undefined,
+  },
+  keywords: [
+    "pizza oven materials Kenya",
+    "fire bricks Nairobi",
+    "pizza oven builders Nairobi",
+    "pizza oven repair",
+    "refractory cement Kenya",
+    "roof cyclones Kenya",
+    "roof cyclone installation",
+    "turbine ventilator",
+  ],
+  category: "Construction materials",
+  manifest: "/manifest.webmanifest",
   formatDetection: { telephone: false },
 };
 

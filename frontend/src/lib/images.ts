@@ -3,6 +3,8 @@ import type { StaticImageData } from "next/image";
 import cycloneCloseup from "@/assets/cyclones/roof-cyclone-closeup.jpg";
 import cycloneVanes from "@/assets/cyclones/roof-cyclone-vanes.jpg";
 import cycloneRoof from "@/assets/cyclones/industrial-roof-cyclones.jpg";
+import cycloneOnRoof from "@/assets/cyclones/cyclone-on-corrugated-roof.jpg";
+import steelCyclone from "@/assets/cyclones/steel-roof-cyclone.jpg";
 import firebrick from "@/assets/pizza/fire-brick.jpg";
 import margherita from "@/assets/pizza/margherita-pizza.jpg";
 import margheritaRound from "@/assets/pizza/margherita-round.webp";
@@ -41,6 +43,8 @@ const SOURCES: Record<string, StaticImageData> = {
   "roof-cyclone-closeup": cycloneCloseup,
   "roof-cyclone-vanes": cycloneVanes,
   "industrial-roof-cyclones": cycloneRoof,
+  "cyclone-on-corrugated-roof": cycloneOnRoof,
+  "steel-roof-cyclone": steelCyclone,
 };
 
 export const IMAGES: Record<string, IllustrativeImage> = Object.fromEntries(
@@ -56,7 +60,7 @@ const CATEGORY_IMAGES: Record<string, string> = {
   "dome-walls-bonding": "pizzeria-brick-oven",
   "pizza-oven-insulation": "vermiculite",
   "door-seals-finishing": "tiled-oven-mouth",
-  "roof-cyclones": "roof-cyclone-closeup",
+  "roof-cyclones": "steel-roof-cyclone",
 };
 
 const SERVICE_IMAGES: Record<string, string> = {
@@ -64,7 +68,7 @@ const SERVICE_IMAGES: Record<string, string> = {
   "pizza-oven-repair-relining": "pizzeria-brick-oven",
   "pizza-oven-material-advice": "fire-brick",
   "roof-cyclone-repair": "roof-cyclone-vanes",
-  "roof-cyclone-installation": "industrial-roof-cyclones",
+  "roof-cyclone-installation": "cyclone-on-corrugated-roof",
 };
 
 const APPLICATION_IMAGES: Record<string, string> = {
@@ -79,7 +83,7 @@ const APPLICATION_IMAGES: Record<string, string> = {
 const PRODUCT_IMAGES: Record<string, string> = {
   "fire-bricks-refractory-bricks": "fire-brick",
   vermiculite: "vermiculite",
-  "roof-ventilators-roof-cyclones": "roof-cyclone-closeup",
+  "roof-ventilators-roof-cyclones": "cyclone-on-corrugated-roof",
 };
 
 const pick = (key: string | undefined) => (key ? IMAGES[key] : undefined);

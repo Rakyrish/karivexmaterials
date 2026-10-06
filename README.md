@@ -92,6 +92,7 @@ cd backend && .venv/bin/python manage.py test                 # 44 backend tests
 cd frontend && npm run lint && npm run build                   # lint + type-check + production build
 # with both servers running:
 backend/.venv/bin/python -I scripts/smoke_check.py             # pages, canonicals, 404s, sitemap, robots
+backend/.venv/bin/python -I scripts/seo_audit.py               # titles, descriptions, H1, alt, JSON-LD, broken links
 cd backend && .venv/bin/python -I ../scripts/e2e_check.py      # quote flow, mail capture, revalidation, media
 ```
 
@@ -100,6 +101,7 @@ See `docs/verification.md` for what was actually run and the results.
 ## Documentation
 
 * `docs/pizza-focus.md` — what is public, services, photos and licences, SEO and rich results
+* `docs/seo-playbook.md` — what the site does for search, plus Search Console, Google Business Profile and link-building steps
 * `docs/deployment.md` — server, DNS, TLS, proxy, email, Search Console, backups, rollback
 * `docs/admin-guide.md` — creating staff accounts, editing the catalogue, handling enquiries
 * `docs/catalogue-mapping.md` — where every supplied catalogue item ended up

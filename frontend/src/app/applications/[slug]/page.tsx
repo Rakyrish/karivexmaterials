@@ -16,7 +16,9 @@ export async function generateMetadata({ params, searchParams }: PageProps<"/app
   if (!application) return { title: "Application not found", robots: { index: false } };
   const path = `/applications/${application.slug}`;
   return pageMetadata({
-    title: application.seo_title || `${application.name} — Pizza Oven Materials`,
+    title:
+      application.seo_title ||
+      (application.name.length <= 32 ? `${application.name}: Materials & Services` : application.name),
     description: application.seo_description || application.intro,
     path,
     canonicalPath: page > 1 ? `${path}?page=${page}` : path,

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { CheckIcon } from "@/components/Icons";
+import { JsonLd } from "@/components/JsonLd";
 import { FilterForm, ProductGrid } from "@/components/ProductGrid";
 import { Container, PageHero } from "@/components/Section";
 import { getCategory, getFacets, getProducts } from "@/lib/api";
@@ -136,6 +137,21 @@ export default async function CategoryPage({ params, searchParams }: PageProps<"
           />
         </section>
       </Container>
+      {products.results.length > 0 && (
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            name: category.name,
+            itemListElement: products.results.map((product, index) => ({
+              "@type": "ListItem",
+              position: index + 1,
+              url: absoluteUrl(`/products/${product.slug}`),
+              name: product.name,
+            })),
+          }}
+        />
+      )}
     </>
   );
 }

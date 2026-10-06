@@ -9,9 +9,9 @@ import { serviceImage } from "@/lib/images";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "Pizza Oven Services — Building, Repair, Advice & Delivery",
+  title: "Pizza Oven & Roof Cyclone Services in Kenya",
   description:
-    "Pizza oven building, repair and relining, material selection advice and delivery of oven materials from KariVex Industrial Materials in Nairobi.",
+    "Pizza oven building, repair and relining, material advice and delivery, plus roof cyclone installation and repair, from KariVex Industrial Materials in Nairobi.",
   path: "/services",
 });
 
@@ -21,12 +21,12 @@ export default async function ServicesPage() {
     <>
       <PageHero
         eyebrow="Services"
-        title="Pizza oven services"
+        title="Pizza oven and roof cyclone services"
         breadcrumbs={<Breadcrumbs items={[{ name: "Services", href: "/services" }]} />}
       >
         <p>
-          As well as supplying the materials, we build and repair pizza ovens, help you choose materials for your own
-          project, and deliver to your site. Every job is quoted individually.
+          As well as supplying the materials, we build and repair pizza ovens, install and repair roof cyclones, help
+          you choose materials for your own project, and deliver to your site. Every job is quoted individually.
         </p>
       </PageHero>
       <Container className="py-12">

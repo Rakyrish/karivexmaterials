@@ -24,7 +24,7 @@ const GUIDES = [
     href: "/roof-cyclone-guide",
     title: "Roof cyclones: how they work and how to keep them turning",
     summary: "How turbine ventilators work, where they help, choosing them, and fixing squeaks, wobbles and leaks.",
-    image: IMAGES["roof-cyclone-closeup"],
+    image: IMAGES["steel-roof-cyclone"],
   },
 ];
 

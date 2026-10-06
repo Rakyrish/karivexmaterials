@@ -104,6 +104,10 @@ CYCLONE_PRODUCT_OVERRIDE = {
         "A: We stock 600 mm (throat diameter) roof cyclones made of stainless steel.\n\n"
         "Q: Do you install roof cyclones?\n"
         "A: Yes. We can supply cyclones only, or supply and install them, fitting the base to your roof profile and sealing it.\n\n"
+        "Q: Why choose stainless steel cyclones?\n"
+        "A: Stainless steel is the most corrosion-resistant common cyclone material, so it suits exposed roofs, coastal areas and damp or fume-laden buildings.\n\n"
+        "Q: How often should roof cyclones be checked?\n"
+        "A: For homes, once a year; on factories and warehouses, at least every six months. Check they spin freely and quietly, fixings are tight and the base seal is intact.\n\n"
         "Q: How many roof cyclones does my building need?\n"
         "A: It depends on the building's volume, use and how much air change you want. Send us the roof area, building type and roof profile and we will advise."
     ),

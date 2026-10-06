@@ -169,5 +169,31 @@
     "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
     "sourcePage": "https://commons.wikimedia.org/wiki/File:Roof_Turbines.jpg",
     "note": "Cropped from the original photo."
+  },
+  {
+    "key": "cyclone-on-corrugated-roof",
+    "file": "cyclone-on-corrugated-roof.jpg",
+    "alt": "A shiny turbine roof cyclone fitted on a corrugated metal roof with a sealed flashing base",
+    "width": 1024,
+    "height": 683,
+    "title": "Keeping it Cool",
+    "artist": "Damien Ayers",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "sourcePage": "https://www.flickr.com/photos/13935267@N00/4826159119",
+    "note": "Found via Openverse; re-encoded for the web."
+  },
+  {
+    "key": "steel-roof-cyclone",
+    "file": "steel-roof-cyclone.jpg",
+    "alt": "A polished steel roof cyclone with curved vanes against a grey sky",
+    "width": 1024,
+    "height": 683,
+    "title": "Steel Whirlybird turbine roof vent",
+    "artist": "danielmee33",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "sourcePage": "https://www.flickr.com/photos/8432632@N04/27910653312",
+    "note": "Found via Openverse; re-encoded for the web."
   }
 ]

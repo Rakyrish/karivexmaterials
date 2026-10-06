@@ -18,7 +18,7 @@ const DEFAULT_INTRO =
 export async function generateMetadata() {
   const settings = await loadSettings();
   return pageMetadata({
-    title: "Pizza Oven Materials & Roof Cyclones in Kenya | KariVex Industrial Materials",
+    title: "Pizza Oven Materials & Roof Cyclones in Kenya | KariVex",
     absoluteTitle: true,
     description:
       settings.homepage_intro ||
@@ -141,8 +141,8 @@ export default async function HomePage() {
           <div className="relative">
             <div className="relative aspect-[4/3] overflow-hidden rounded-3xl shadow-xl">
               <Image
-                src={IMAGES["roof-cyclone-closeup"].src}
-                alt={IMAGES["roof-cyclone-closeup"].alt}
+                src={IMAGES["cyclone-on-corrugated-roof"].src}
+                alt={IMAGES["cyclone-on-corrugated-roof"].alt}
                 fill
                 placeholder="blur"
                 sizes="(min-width:1024px) 45vw, 100vw"

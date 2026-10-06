@@ -12,7 +12,7 @@ import { IMAGES } from "@/lib/images";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "Roof Cyclone Guide — How Turbine Ventilators Work & Common Faults",
+  title: "Roof Cyclone Guide: How They Work & Common Faults",
   description:
     "How roof cyclones (turbine ventilators, whirlybirds) work, where they help, how to choose them, and how to fix squeaking, wobbling, stuck or leaking cyclones.",
   path: "/roof-cyclone-guide",
@@ -62,6 +62,27 @@ const PROBLEMS = [
   },
 ];
 
+const MATERIALS = [
+  {
+    material: "Stainless steel (what we stock)",
+    corrosion: "Highest resistance; suits coastal sites, damp buildings and areas with fumes",
+    strength: "Strongest; resists dents and weathering",
+    notes: "Higher purchase price, lower cost over the life of the roof",
+  },
+  {
+    material: "Aluminium",
+    corrosion: "Good; forms its own protective oxide layer, but can pit in acidic or alkaline air",
+    strength: "Light; dents more easily",
+    notes: "Common lower-cost choice for homes",
+  },
+  {
+    material: "Galvanised steel",
+    corrosion: "Protected by its zinc coating until the coating wears or is scratched",
+    strength: "Strong",
+    notes: "Can rust once the coating is damaged",
+  },
+];
+
 const FAQS = [
   {
     question: "What is the difference between a roof cyclone, a turbine ventilator and a whirlybird?",
@@ -77,6 +98,16 @@ const FAQS = [
     question: "How long do roof cyclones last?",
     answer:
       "It depends on the material, the bearings and the conditions. Bearings are the part that wears; replacing or servicing them often brings a noisy cyclone back into good working order.",
+  },
+  {
+    question: "How often should roof cyclones be serviced?",
+    answer:
+      "For homes, a visual check once a year is usually enough. On factories and warehouses, check them at least every six months: make sure they spin freely and quietly, the fixings are tight and the base seal is intact.",
+  },
+  {
+    question: "Why are your cyclones stainless steel?",
+    answer:
+      "Stainless steel is the most corrosion-resistant of the common cyclone materials, so it holds up well on exposed roofs, near the coast and over damp or fume-laden buildings.",
   },
   {
     question: "Why does my cyclone leak when it rains?",
@@ -182,6 +213,121 @@ export default function RoofCycloneGuidePage() {
             </div>
           </section>
 
+          <section aria-labelledby="how-many">
+            <h2 id="how-many" className={h2}>
+              How many cyclones, and where
+            </h2>
+            <div className="prose-copy mt-4 space-y-4 text-lg text-ink">
+              <p>
+                For roof spaces, a widely used rule of thumb is about 1 unit of vent area for every 300 units of floor
+                area (for example 1 m² of vents per 300 m²), split between low-level air intake and high-level exhaust
+                such as cyclones, as explained in this{" "}
+                <Ref href="https://www.familyhandyman.com/?p=19188">comparison of roof vents and turbine vents</Ref>.
+                Factories, warehouses and poultry houses usually need more air movement than a home roof space, because
+                machinery, stock, animals or processes add heat and moisture.
+              </p>
+              <p>
+                Cyclones belong high on the roof, close to the ridge, where the hottest air collects. Manufacturer{" "}
+                <Ref href="https://res.cloudinary.com/amerhart/image/upload/Documents/Product/Lomanco%20Whirlybird%20BEB-BIB%20Installation">
+                  installation guidance for whirlybirds
+                </Ref>{" "}
+                spaces them evenly along the ridge: with two, each sits a quarter of the ridge length in from its end;
+                with three, the outer two sit a sixth of the length in from each end and the third goes in the middle.
+              </p>
+              <p>
+                Cyclones also need air to replace what they extract, through eaves vents, louvres, windows or doors.
+                Send us your roof size and building use and we will recommend a number and layout.
+              </p>
+            </div>
+          </section>
+
+          <section aria-labelledby="materials">
+            <h2 id="materials" className={h2}>
+              Stainless steel, aluminium or galvanised?
+            </h2>
+            <div className="mt-5 overflow-x-auto rounded-xl border border-line">
+              <table className="w-full text-left text-sm">
+                <caption className="sr-only">Roof cyclone materials compared</caption>
+                <thead className="bg-navy text-white">
+                  <tr>
+                    <th scope="col" className="px-4 py-3">Material</th>
+                    <th scope="col" className="px-4 py-3">Corrosion</th>
+                    <th scope="col" className="px-4 py-3">Strength</th>
+                    <th scope="col" className="px-4 py-3">Notes</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-line">
+                  {MATERIALS.map((m) => (
+                    <tr key={m.material} className="odd:bg-mist/60">
+                      <th scope="row" className="px-4 py-3 font-semibold text-navy">{m.material}</th>
+                      <td className="px-4 py-3">{m.corrosion}</td>
+                      <td className="px-4 py-3">{m.strength}</td>
+                      <td className="px-4 py-3">{m.notes}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-4 text-slate">
+              General guidance on how the metals behave; the right choice also depends on budget and site conditions.
+            </p>
+          </section>
+
+          <section aria-labelledby="installation">
+            <h2 id="installation" className={h2}>
+              What installation involves
+            </h2>
+            <ol className="mt-4 space-y-3">
+              {[
+                "Plan the number and positions of the cyclones along the ridge.",
+                "Mark and cut a round opening in the roof sheet for each cyclone's throat.",
+                "Fit a base (flashing) that matches the roof sheet profile and pitch.",
+                "Seal the base and fix it securely so rain cannot get in.",
+                "Fit the cyclone head, check it is level and turns freely.",
+              ].map((step, i) => (
+                <li key={step} className="flex gap-3 text-lg text-ink">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-orange font-bold text-navy">{i + 1}</span>
+                  <span>{step}</span>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-4 text-slate">
+              Roof work is dangerous; it needs proper access equipment and fall protection.{" "}
+              <Link href="/services/roof-cyclone-installation" className="font-semibold text-navy underline">
+                We install 600 mm stainless steel cyclones
+              </Link>
+              .
+            </p>
+          </section>
+
+          <section aria-labelledby="maintenance">
+            <h2 id="maintenance" className={h2}>
+              Maintenance
+            </h2>
+            <ul className="mt-4 space-y-2 text-lg text-ink">
+              {[
+                "Homes: a visual check once a year, ideally before the hottest season.",
+                "Factories and warehouses: inspect at least every six months.",
+                "Check that each cyclone spins freely and quietly in a breeze.",
+                "Tighten loose screws and bolts on the head and base.",
+                "Clean off dust and debris; lubricate or replace dry bearings.",
+                "Check the base seal for cracks and reseal if water gets in.",
+              ].map((item) => (
+                <li key={item} className="flex gap-2">
+                  <CheckIcon className="mt-1.5 shrink-0 text-orange-600" /> {item}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 text-slate">
+              Intervals follow typical guidance such as this{" "}
+              <Ref href="https://aerovent.com/wp-content/uploads/2018/12/Model-53-40C-and-SV40-Roof-Ventilators-IM-120.pdf">
+                roof ventilator maintenance manual
+              </Ref>{" "}
+              and these{" "}
+              <Ref href="https://www.hunker.com/12359164/how-to-lubricate-roof-vents/">tips on lubricating roof vents</Ref>.
+            </p>
+          </section>
+
           <section aria-labelledby="problems">
             <h2 id="problems" className={h2}>
               Common problems and fixes
@@ -231,6 +377,16 @@ export default function RoofCycloneGuidePage() {
             <figcaption className="p-3 text-xs text-slate">A roof cyclone (illustrative photo).</figcaption>
           </figure>
           <figure className="overflow-hidden rounded-2xl border border-line">
+            <Image
+              src={IMAGES["cyclone-on-corrugated-roof"].src}
+              alt={IMAGES["cyclone-on-corrugated-roof"].alt}
+              placeholder="blur"
+              sizes="(min-width:1024px) 33vw, 100vw"
+              className="h-auto w-full"
+            />
+            <figcaption className="p-3 text-xs text-slate">A cyclone fitted on a corrugated roof with a sealed base (illustrative photo).</figcaption>
+          </figure>
+          <figure className="overflow-hidden rounded-2xl border border-line">
             <Image src={vanes.src} alt={vanes.alt} placeholder="blur" sizes="(min-width:1024px) 33vw, 100vw" className="h-auto w-full" />
             <figcaption className="p-3 text-xs text-slate">Worn, dirty vanes and the top bearing (illustrative photo).</figcaption>
           </figure>
@@ -261,7 +417,7 @@ export default function RoofCycloneGuidePage() {
           headline: "Roof cyclones: how they work and how to keep them turning",
           description:
             "How roof cyclones (turbine ventilators) work, where they help, how to choose them, and common faults and fixes.",
-          image: [absoluteUrl(closeup.src.src), absoluteUrl(roof.src.src)],
+          image: [absoluteUrl(closeup.src.src), absoluteUrl(roof.src.src), absoluteUrl(IMAGES["cyclone-on-corrugated-roof"].src.src)],
           datePublished: PUBLISHED,
           dateModified: PUBLISHED,
           mainEntityOfPage: absoluteUrl("/roof-cyclone-guide"),
