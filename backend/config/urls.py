@@ -18,6 +18,8 @@ urlpatterns = [
     path("api/v1/", include("catalog.urls")),
     path("api/v1/", include("sitesettings.urls")),
     path("api/v1/", include("enquiries.urls")),
+    # Authenticated dashboard API (session + CSRF, model permissions).
+    path("api/manage/", include("manage_api.urls")),
 ]
 
 if settings.SERVE_MEDIA:

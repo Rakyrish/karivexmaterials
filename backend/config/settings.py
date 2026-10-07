@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     "catalog",
     "enquiries",
     "sitesettings",
+    "manage_api",
 ]
 
 MIDDLEWARE = [

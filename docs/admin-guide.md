@@ -1,5 +1,32 @@
 # Administrator guide
 
+## Website dashboard (everyday editing)
+
+Dashboard address: `https://materials.karivexsolutionsltd.com/dashboard` (locally
+`http://localhost:3000/dashboard`). Sign in with the same staff account as the Django admin.
+
+| Section | What you can do |
+| --- | --- |
+| Overview | Counts of live/draft/hidden content, latest enquiries, failed-email warnings, quick tasks. |
+| View the site | Browse the live public site inside the dashboard at desktop, tablet or phone width. |
+| Products | Add and edit products; upload photos (set the main photo, reorder, describe, delete); edit sizes/options and specifications; price, FAQs, search-engine text; publish or hide. |
+| Categories, Uses, Services | Edit text, FAQs, visibility and upload or remove their photos. |
+| Testimonials | Add real customer feedback; it publishes only with the consent box ticked. |
+| Enquiries | Read requests, set status, keep staff notes, reply by email. |
+| Site settings | Phone numbers, WhatsApp, email, address, hours, areas served, homepage headline and intro, header logo, Google review link, Analytics ID. |
+
+* Saving updates the public site within a few seconds. Each section shows only what your
+  group allows; the server checks the same permissions again on every save.
+* Photos: JPEG, PNG or WebP up to 8 MB. They are resized and stripped of metadata automatically.
+  An uploaded photo replaces the built-in illustrative picture for that item. Remove it to go back.
+* Content uploaded on your computer's local copy is **not** copied to the live site. Enter it
+  in the live dashboard after deployment.
+* Sign-in is rate-limited (10 attempts per 15 minutes per connection and per username).
+* The Django admin (**Advanced admin** in the dashboard menu) is still there for user accounts,
+  redirects, datasheets (PDFs) and bulk actions.
+
+## Django admin
+
 Admin address: `https://materials.karivexsolutionsltd.com/admin/` (locally `http://localhost:8000/admin/`).
 
 ## Accounts and roles

@@ -36,12 +36,14 @@ export function ProductVisual({
           fill
           sizes={sizes}
           preload={preload}
-          placeholder="blur"
-          className="object-cover"
+          placeholder={fallback.badge ? "blur" : "empty"}
+          className={fallback.badge ? "object-cover" : "bg-white object-contain"}
         />
-        <span className="absolute bottom-2 left-2 rounded bg-navy/85 px-2 py-0.5 text-[0.7rem] font-semibold uppercase tracking-wide text-white">
-          Illustrative photo
-        </span>
+        {fallback.badge && (
+          <span className="absolute bottom-2 left-2 rounded bg-navy/85 px-2 py-0.5 text-[0.7rem] font-semibold uppercase tracking-wide text-white">
+            {fallback.badge}
+          </span>
+        )}
       </div>
     );
   }
